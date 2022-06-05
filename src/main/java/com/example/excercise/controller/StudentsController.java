@@ -1,24 +1,23 @@
 package com.example.excercise.controller;
 
-import com.example.excercise.dto.requestdto.CreateStudentRequestBody;
+import com.example.excercise.dto.requestdto.CreateStudentRequest;
+import com.example.excercise.service.StudentsService;
 import javax.validation.Valid;
-import java.net.URI;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
+@RequiredArgsConstructor
 public class StudentsController {
 
-  @GetMapping("/hellos")
-  public String hellos(){
-    return "hello spring";
-  }
+  private StudentsService studentsService;
 
   @PostMapping
-  public ResponseEntity<String> createStudent(@Valid @RequestBody CreateStudentRequestBody createStudentRequestBody){
-      return ResponseEntity.status(HttpStatus.CREATED).body(createStudentRequestBody.getName());
+  public ResponseEntity<String> createStudent(@Valid @RequestBody CreateStudentRequest createStudentRequest){
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(createStudentRequest.getName());
   }
 }

@@ -3,7 +3,6 @@ package com.example.excercise.dto.requestdto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateStudentRequestBody {
+public class CreateStudentRequest {
 
   @NotBlank(message = "Name is required")
   private String name;
