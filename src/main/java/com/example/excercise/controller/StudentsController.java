@@ -2,9 +2,10 @@ package com.example.excercise.controller;
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
 import com.example.excercise.dto.responcedto.StudentIdResponse;
-import com.example.excercise.dto.responcedto.StudentResponse;
+import com.example.excercise.dto.responcedto.StudentsResponse;
 import com.example.excercise.repository.Student;
 import com.example.excercise.service.StudentsService;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,13 +34,18 @@ public class StudentsController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<StudentResponse> getStudent(@PathVariable Integer id){
+  public ResponseEntity<StudentsResponse> getStudent(@PathVariable Integer id){
     Student studentById = studentsService.findStudentById(id);
-    return ResponseEntity.ok(StudentResponse.builder()
-            .id(studentById.getId())
-            .name(studentById.getName())
-            .grade(studentById.getGrade())
-            .classNumber(studentById.getClassNumber())
+    return ResponseEntity.ok(StudentsResponse.builder()
+            .data(List.of(studentById))
             .build());
+  }
+
+  @GetMapping
+  public ResponseEntity<StudentsResponse> getAllStudent(){
+    List<Student> allStudents = studentsService.findAllStudents();
+    return ResponseEntity.ok(StudentsResponse.builder()
+            .data(allStudents)
+        .build());
   }
 }

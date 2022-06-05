@@ -14,4 +14,8 @@ public class StudentsRepository {
   }
 
   public Optional<Student> findById(Integer id) {return jpaStudentRepository.findById(id);}
+
+  public Iterable<Student> findAll(){
+    return jpaStudentRepository.findAll();
+  }
 }
