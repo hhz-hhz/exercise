@@ -28,9 +28,8 @@ public class StudentsService {
     return studentsRepository.save(student);
   }
 
-  public Student findStudentById(Integer id) {
-    Optional<Student> student = studentsRepository.findById(id);
-    return student.orElseThrow(() -> new StudentNotFoundException(id));
+  public Optional<Student> findStudentById(Integer id) {
+    return studentsRepository.findById(id);
   }
 
   public List<Student> findAllStudents(){
