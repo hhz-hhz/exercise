@@ -2,13 +2,13 @@ package com.example.excercise.controller;
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
 import com.example.excercise.dto.responcedto.StudentIdResponse;
+import com.example.excercise.dto.responcedto.StudentResponse;
 import com.example.excercise.repository.Student;
 import com.example.excercise.service.StudentsService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +33,13 @@ public class StudentsController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<String> getStudent(@PathVariable Integer id){
-    return ResponseEntity.ok(id.toString());
+  public ResponseEntity<StudentResponse> getStudent(@PathVariable Integer id){
+    Student studentById = studentsService.findStudentById(id);
+    return ResponseEntity.ok(StudentResponse.builder()
+            .id(studentById.getId())
+            .name(studentById.getName())
+            .grade(studentById.getGrade())
+            .classNumber(studentById.getClassNumber())
+            .build());
   }
 }

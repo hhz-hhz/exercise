@@ -2,8 +2,10 @@ package com.example.excercise.service;
 
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
+import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.repository.Student;
 import com.example.excercise.repository.StudentsRepository;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,10 @@ public class StudentsService {
         .classNumber(createStudentRequest.getClassNumber())
         .build();
     return studentsRepository.save(student);
+  }
+
+  public Student findStudentById(Integer id) {
+    Optional<Student> student = studentsRepository.findById(id);
+    return student.orElseThrow(() -> new StudentNotFoundException(id));
   }
 }
