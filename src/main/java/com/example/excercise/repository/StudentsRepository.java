@@ -1,5 +1,6 @@
 package com.example.excercise.repository;
 
+import com.example.excercise.entity.StudentEntity;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Repository;
 public class StudentsRepository {
   private final JpaStudentRepository jpaStudentRepository;
 
-  public Student save(Student student){
+  public StudentEntity save(StudentEntity student){
     return jpaStudentRepository.save(student);
   }
 
-  public Optional<Student> findById(Integer id) {return jpaStudentRepository.findById(id);}
+  public Optional<StudentEntity> findById(Integer id) {return jpaStudentRepository.findById(id);}
 
-  public Iterable<Student> findAll(){
+  public Iterable<StudentEntity> findAll(){
     return jpaStudentRepository.findAll();
   }
 }

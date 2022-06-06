@@ -1,4 +1,4 @@
-package com.example.excercise.repository;
+package com.example.excercise.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "students")
 @Entity
-public class Student {
+public class StudentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

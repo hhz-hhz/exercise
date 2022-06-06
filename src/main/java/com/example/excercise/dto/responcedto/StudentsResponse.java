@@ -1,6 +1,6 @@
 package com.example.excercise.dto.responcedto;
 
-import com.example.excercise.repository.Student;
+import com.example.excercise.entity.StudentEntity;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentsResponse {
-  private List<Student> data;
+  private List<StudentEntity> data;
 }

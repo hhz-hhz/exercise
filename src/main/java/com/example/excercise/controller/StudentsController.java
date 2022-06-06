@@ -3,7 +3,7 @@ package com.example.excercise.controller;
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
 import com.example.excercise.dto.responcedto.StudentIdResponse;
 import com.example.excercise.dto.responcedto.StudentsResponse;
-import com.example.excercise.repository.Student;
+import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.service.StudentsService;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class StudentsController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public StudentIdResponse createStudent(@Valid @RequestBody CreateStudentRequest createStudentRequest){
-    Student student = studentsService.createStudent(createStudentRequest);
+    StudentEntity student = studentsService.createStudent(createStudentRequest);
     return StudentIdResponse.builder()
         .id(student.getId())
         .build();
@@ -36,7 +36,7 @@ public class StudentsController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Object> getStudent(@PathVariable Integer id){
-    Optional<Student> studentById = studentsService.findStudentById(id);
+    Optional<StudentEntity> studentById = studentsService.findStudentById(id);
     if(studentById.isEmpty()){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found with id: "+id);
     }
@@ -47,7 +47,7 @@ public class StudentsController {
 
   @GetMapping
   public ResponseEntity<StudentsResponse> getAllStudent(){
-    List<Student> allStudents = studentsService.findAllStudents();
+    List<StudentEntity> allStudents = studentsService.findAllStudents();
     return ResponseEntity.ok(StudentsResponse.builder()
             .data(allStudents)
         .build());

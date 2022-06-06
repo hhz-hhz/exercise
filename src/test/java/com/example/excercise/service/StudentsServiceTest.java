@@ -6,10 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
-import com.example.excercise.exception.StudentNotFoundException;
-import com.example.excercise.repository.Student;
+import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.repository.StudentsRepository;
-import org.junit.jupiter.api.function.Executable;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +26,7 @@ class StudentsServiceTest {
   private StudentsRepository studentsRepository;
 
   private final CreateStudentRequest studentRequest = new CreateStudentRequest("jack", 1, 8);
-  private final Student student = Student.builder()
+  private final StudentEntity student = StudentEntity.builder()
       .id(9)
       .name(studentRequest.getName())
       .grade(studentRequest.getGrade())
@@ -36,12 +34,12 @@ class StudentsServiceTest {
       .build();
   @Test
   void should_return_student_when_create_a_student() {
-    ArgumentCaptor<Student> captor = ArgumentCaptor.forClass(Student.class);
+    ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
     when(studentsRepository.save(captor.capture())).thenReturn(student);
 
-    Student actualStudent = studentsService.createStudent(studentRequest);
+    StudentEntity actualStudent = studentsService.createStudent(studentRequest);
 
-    Student argument = captor.getValue();
+    StudentEntity argument = captor.getValue();
     assertThat(argument.getName(), is("jack"));
     assertThat(argument.getGrade(), is(1));
     assertThat(argument.getClassNumber(), is(8));
@@ -51,7 +49,7 @@ class StudentsServiceTest {
   @Test
   void should_return_student_when_find_exist_student() {
     when(studentsRepository.findById(9)).thenReturn(Optional.ofNullable(student));
-    Student studentById = studentsService.findStudentById(9).orElse(new Student());
+    StudentEntity studentById = studentsService.findStudentById(9).orElse(new StudentEntity());
     assertThat(studentById.getName(), is("jack"));
     assertThat(studentById.getGrade(), is(1));
     assertThat(studentById.getClassNumber(), is(8));

@@ -2,10 +2,8 @@ package com.example.excercise.service;
 
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
-import com.example.excercise.exception.StudentNotFoundException;
-import com.example.excercise.repository.Student;
+import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.repository.StudentsRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,8 +17,8 @@ public class StudentsService {
 
   private StudentsRepository studentsRepository;
 
-  public Student createStudent(CreateStudentRequest createStudentRequest){
-    Student student = Student.builder()
+  public StudentEntity createStudent(CreateStudentRequest createStudentRequest){
+    StudentEntity student = StudentEntity.builder()
         .name(createStudentRequest.getName())
         .grade(createStudentRequest.getGrade())
         .classNumber(createStudentRequest.getClassNumber())
@@ -28,12 +26,13 @@ public class StudentsService {
     return studentsRepository.save(student);
   }
 
-  public Optional<Student> findStudentById(Integer id) {
+  public Optional<StudentEntity> findStudentById(Integer id) {
+
     return studentsRepository.findById(id);
   }
 
-  public List<Student> findAllStudents(){
-    Iterable<Student> allStudents = studentsRepository.findAll();
+  public List<StudentEntity> findAllStudents(){
+    Iterable<StudentEntity> allStudents = studentsRepository.findAll();
     return StreamSupport.stream(allStudents.spliterator(), false)
         .collect(Collectors.toList());
   }
