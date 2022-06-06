@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ParameterExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(value = StudentNotFoundException.class)
+  @ExceptionHandler(value = ParameterException.class)
   protected ResponseEntity<Object> handleMessagePublisherException(
       RuntimeException ex, WebRequest request) {
     return handleExceptionInternal(

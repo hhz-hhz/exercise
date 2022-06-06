@@ -4,22 +4,17 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateStudentRequest {
 
-  @NotBlank(message = "Name is required")
   private String name;
-
-  @Min(value = 1, message = "Grade should not be less than 1")
-  @Max(value = 9, message = "Grade should not be more than 9")
   private int grade;
-
-  @Min(value = 1, message = "classNumber should not be less than 1")
-  @Max(value = 20, message = "classNumber should not be more than 20")
   private int classNumber;
 }

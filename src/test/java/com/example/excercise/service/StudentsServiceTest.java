@@ -3,19 +3,19 @@ package com.example.excercise.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.StudentEntity;
+import com.example.excercise.exception.ClassNumberNotValidatedException;
+import com.example.excercise.exception.GradeNotValidatedException;
+import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.Spliterator;
-import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
@@ -33,7 +33,11 @@ class StudentsServiceTest {
   @Mock
   private StudentsRepository studentsRepository;
 
-  private final CreateStudentRequest studentRequest = new CreateStudentRequest("jack", 1, 8);
+  private final CreateStudentRequest studentRequest = CreateStudentRequest.builder()
+      .name("jack")
+      .grade(1)
+      .classNumber(8)
+      .build();
   private final StudentEntity student = StudentEntity.builder()
       .id(9)
       .name(studentRequest.getName())
@@ -53,6 +57,76 @@ class StudentsServiceTest {
     assertThat(argument.getGrade(), is(1));
     assertThat(argument.getClassNumber(), is(8));
     assertThat(actualStudent.getId(), is(9));
+  }
+
+  @Test
+  void should_throw_name_null_exception_when_name_is_null_in_request() {
+    CreateStudentRequest studentNameNull = CreateStudentRequest.builder()
+        .name("")
+        .grade(1)
+        .classNumber(1)
+        .build();
+
+    Executable executable = () -> studentsService.createStudent(studentNameNull);
+    Exception exception = assertThrows(NameIsNullException.class, executable);
+
+    assertThat(exception.getMessage(), is("Name is required"));
+  }
+
+  @Test
+  void should_throw_grade_not_validated_exception_when_garde_is_bigger_than_9() {
+    CreateStudentRequest student = CreateStudentRequest.builder()
+        .name("nana")
+        .grade(100)
+        .classNumber(1)
+        .build();
+
+    Executable executable = () -> studentsService.createStudent(student);
+    Exception exception = assertThrows(GradeNotValidatedException.class, executable);
+
+    assertThat(exception.getMessage(), is("Grade should be on a scale of 1 to 9"));
+  }
+
+  @Test
+  void should_throw_grade_not_validated_exception_when_garde_is_smaller_than_1() {
+    CreateStudentRequest student = CreateStudentRequest.builder()
+        .name("nana")
+        .grade(0)
+        .classNumber(1)
+        .build();
+
+    Executable executable = () -> studentsService.createStudent(student);
+    Exception exception = assertThrows(GradeNotValidatedException.class, executable);
+
+    assertThat(exception.getMessage(), is("Grade should be on a scale of 1 to 9"));
+  }
+
+  @Test
+  void should_throw_class_number_not_validated_exception_when_class_is_bigger_than_20() {
+    CreateStudentRequest student = CreateStudentRequest.builder()
+        .name("nana")
+        .grade(1)
+        .classNumber(200)
+        .build();
+
+    Executable executable = () -> studentsService.createStudent(student);
+    Exception exception = assertThrows(ClassNumberNotValidatedException.class, executable);
+
+    assertThat(exception.getMessage(), is("Class number should be on a scale of 1 to 20"));
+  }
+
+  @Test
+  void should_throw_class_number_not_validated_exception_when_class_is_small_than_1() {
+    CreateStudentRequest student = CreateStudentRequest.builder()
+        .name("nana")
+        .grade(1)
+        .classNumber(0)
+        .build();
+
+    Executable executable = () -> studentsService.createStudent(student);
+    Exception exception = assertThrows(ClassNumberNotValidatedException.class, executable);
+
+    assertThat(exception.getMessage(), is("Class number should be on a scale of 1 to 20"));
   }
 
   @Test
