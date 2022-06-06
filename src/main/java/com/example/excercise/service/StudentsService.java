@@ -41,10 +41,9 @@ public class StudentsService {
   }
 
   public StudentsResponse findAllStudents(){
-    Iterable<StudentEntity> allStudents = studentsRepository.findAll();
+    List<StudentEntity> allStudents = studentsRepository.findAll();
     return StudentsResponse.builder()
-        .data(StreamSupport
-            .stream(allStudents.spliterator(), false)
+        .data(allStudents.stream()
             .map(StudentMapper.INSTANCE::toStudentResponse)
             .collect(Collectors.toList()))
         .build();
