@@ -3,6 +3,7 @@ package com.example.excercise.service;
 
 import com.example.excercise.dto.requestdto.CreateStudentRequest;
 import com.example.excercise.entity.StudentEntity;
+import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,9 @@ public class StudentsService {
     return studentsRepository.save(student);
   }
 
-  public Optional<StudentEntity> findStudentById(Integer id) {
-
-    return studentsRepository.findById(id);
+  public StudentEntity findStudentById(Integer id) {
+    return studentsRepository.findById(id)
+        .orElseThrow(() -> new StudentNotFoundException(id));
   }
 
   public List<StudentEntity> findAllStudents(){

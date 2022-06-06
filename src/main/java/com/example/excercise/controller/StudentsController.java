@@ -36,12 +36,9 @@ public class StudentsController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Object> getStudent(@PathVariable Integer id){
-    Optional<StudentEntity> studentById = studentsService.findStudentById(id);
-    if(studentById.isEmpty()){
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found with id: "+id);
-    }
+    StudentEntity studentById = studentsService.findStudentById(id);
     return ResponseEntity.ok(StudentsResponse.builder()
-            .data(List.of(studentById.get()))
+            .data(List.of(studentById))
             .build());
   }
 

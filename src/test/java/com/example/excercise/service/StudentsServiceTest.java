@@ -49,7 +49,7 @@ class StudentsServiceTest {
   @Test
   void should_return_student_when_find_exist_student() {
     when(studentsRepository.findById(9)).thenReturn(Optional.ofNullable(student));
-    StudentEntity studentById = studentsService.findStudentById(9).orElse(new StudentEntity());
+    StudentEntity studentById = studentsService.findStudentById(9);
     assertThat(studentById.getName(), is("jack"));
     assertThat(studentById.getGrade(), is(1));
     assertThat(studentById.getClassNumber(), is(8));
