@@ -1,12 +1,14 @@
 package com.example.excercise.service;
 
 
-import com.example.excercise.dto.requestdto.CreateStudentRequest;
+import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.responce.StudentIdResponse;
+import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.StudentNotFoundException;
+import com.example.excercise.mapper.StudentMapper;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
@@ -18,23 +20,33 @@ public class StudentsService {
 
   private StudentsRepository studentsRepository;
 
-  public StudentEntity createStudent(CreateStudentRequest createStudentRequest){
+  public StudentIdResponse createStudent(CreateStudentRequest createStudentRequest){
     StudentEntity student = StudentEntity.builder()
         .name(createStudentRequest.getName())
         .grade(createStudentRequest.getGrade())
         .classNumber(createStudentRequest.getClassNumber())
         .build();
-    return studentsRepository.save(student);
+    return StudentMapper.INSTANCE
+        .toStudentIdResponse(studentsRepository.save(student));
   }
 
-  public StudentEntity findStudentById(Integer id) {
-    return studentsRepository.findById(id)
+  public StudentsResponse findStudentById(Integer id) {
+    StudentEntity studentEntity = studentsRepository.findById(id)
         .orElseThrow(() -> new StudentNotFoundException(id));
+    return StudentsResponse.builder()
+        .data(List.of(StudentMapper
+            .INSTANCE
+            .toStudentResponse(studentEntity)))
+        .build();
   }
 
-  public List<StudentEntity> findAllStudents(){
+  public StudentsResponse findAllStudents(){
     Iterable<StudentEntity> allStudents = studentsRepository.findAll();
-    return StreamSupport.stream(allStudents.spliterator(), false)
-        .collect(Collectors.toList());
+    return StudentsResponse.builder()
+        .data(StreamSupport
+            .stream(allStudents.spliterator(), false)
+            .map(StudentMapper.INSTANCE::toStudentResponse)
+            .collect(Collectors.toList()))
+        .build();
   }
 }

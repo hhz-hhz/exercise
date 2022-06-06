@@ -1,4 +1,4 @@
-package com.example.excercise.dto.responcedto;
+package com.example.excercise.dto.responce;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

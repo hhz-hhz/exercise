@@ -1,12 +1,9 @@
 package com.example.excercise.controller;
 
-import com.example.excercise.dto.requestdto.CreateStudentRequest;
-import com.example.excercise.dto.responcedto.StudentIdResponse;
-import com.example.excercise.dto.responcedto.StudentsResponse;
-import com.example.excercise.entity.StudentEntity;
+import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.responce.StudentIdResponse;
+import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.service.StudentsService;
-import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,25 +25,16 @@ public class StudentsController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public StudentIdResponse createStudent(@Valid @RequestBody CreateStudentRequest createStudentRequest){
-    StudentEntity student = studentsService.createStudent(createStudentRequest);
-    return StudentIdResponse.builder()
-        .id(student.getId())
-        .build();
+    return studentsService.createStudent(createStudentRequest);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Object> getStudent(@PathVariable Integer id){
-    StudentEntity studentById = studentsService.findStudentById(id);
-    return ResponseEntity.ok(StudentsResponse.builder()
-            .data(List.of(studentById))
-            .build());
+    return ResponseEntity.ok(studentsService.findStudentById(id));
   }
 
   @GetMapping
   public ResponseEntity<StudentsResponse> getAllStudent(){
-    List<StudentEntity> allStudents = studentsService.findAllStudents();
-    return ResponseEntity.ok(StudentsResponse.builder()
-            .data(allStudents)
-        .build());
+    return ResponseEntity.ok(studentsService.findAllStudents());
   }
 }

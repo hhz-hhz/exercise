@@ -2,10 +2,11 @@ package com.example.excercise.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import com.example.excercise.dto.requestdto.CreateStudentRequest;
+import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.responce.StudentIdResponse;
+import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.Optional;
@@ -37,7 +38,7 @@ class StudentsServiceTest {
     ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
     when(studentsRepository.save(captor.capture())).thenReturn(student);
 
-    StudentEntity actualStudent = studentsService.createStudent(studentRequest);
+    StudentIdResponse actualStudent = studentsService.createStudent(studentRequest);
 
     StudentEntity argument = captor.getValue();
     assertThat(argument.getName(), is("jack"));
@@ -49,7 +50,7 @@ class StudentsServiceTest {
   @Test
   void should_return_student_when_find_exist_student() {
     when(studentsRepository.findById(9)).thenReturn(Optional.ofNullable(student));
-    StudentEntity studentById = studentsService.findStudentById(9);
+    StudentsResponse.StudentResponse studentById = studentsService.findStudentById(9).getData().get(0);
     assertThat(studentById.getName(), is("jack"));
     assertThat(studentById.getGrade(), is(1));
     assertThat(studentById.getClassNumber(), is(8));

@@ -1,4 +1,4 @@
-package com.example.excercise.dto.requestdto;
+package com.example.excercise.dto.request;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
