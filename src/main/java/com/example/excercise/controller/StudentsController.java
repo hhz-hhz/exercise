@@ -4,7 +4,6 @@ import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.service.StudentsService;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +23,12 @@ public class StudentsController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public StudentIdResponse createStudent(@Valid @RequestBody CreateStudentRequest createStudentRequest){
+  public StudentIdResponse createStudent(@RequestBody CreateStudentRequest createStudentRequest){
     return studentsService.createStudent(createStudentRequest);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Object> getStudent(@PathVariable Integer id){
+  public ResponseEntity<StudentsResponse> getStudent(@PathVariable Integer id){
     return ResponseEntity.ok(studentsService.findStudentById(id));
   }
 
