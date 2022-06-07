@@ -20,4 +20,8 @@ public class StudentsRepository {
   public List<StudentEntity> findAll(){
     return jpaStudentRepository.findAll();
   }
+
+  public List<StudentEntity> findByName(String name) {
+    return jpaStudentRepository.findByName(name);
+  }
 }

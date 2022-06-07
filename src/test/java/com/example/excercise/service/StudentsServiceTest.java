@@ -180,4 +180,17 @@ class StudentsServiceTest {
     assertThat(allStudents.get(1).getClassNumber(), is(3));
 
   }
+
+  @Test
+  void should_return_students_when_name_is_required() {
+    when(studentsRepository.findByName("jack")).thenReturn(List.of(student));
+
+    List<StudentsResponse.StudentResponse> requiredStudents = studentsService.findStudentsByName("jack").getData();
+
+    assertThat(requiredStudents.size(), is(1));
+    assertThat(requiredStudents.get(0).getName(), is("jack"));
+    assertThat(requiredStudents.get(0).getGrade(), is(1));
+    assertThat(requiredStudents.get(0).getClassNumber(), is(8));
+    assertThat(requiredStudents.get(0).getId(), is(9));
+  }
 }

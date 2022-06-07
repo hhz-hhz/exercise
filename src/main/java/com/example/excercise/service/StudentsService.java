@@ -64,4 +64,13 @@ public class StudentsService {
             .collect(Collectors.toList()))
         .build();
   }
+
+  public StudentsResponse findStudentsByName(String name) {
+    List<StudentEntity> requiredStudents = studentsRepository.findByName(name);
+    return StudentsResponse.builder()
+        .data(requiredStudents.stream()
+            .map(studentMapper::toStudentResponse)
+            .collect(Collectors.toList()))
+        .build();
+  }
 }
