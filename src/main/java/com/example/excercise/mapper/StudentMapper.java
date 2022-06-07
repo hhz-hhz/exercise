@@ -7,10 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface StudentMapper {
-  StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
 
-  StudentsResponse.StudentResponse toStudentResponse (StudentEntity studentEntity);
+public interface StudentMapper {
+   StudentsResponse.StudentResponse toStudentResponse (StudentEntity studentEntity);
 
   StudentIdResponse toStudentIdResponse(StudentEntity studentEntity);
 

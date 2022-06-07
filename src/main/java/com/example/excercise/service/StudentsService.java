@@ -13,14 +13,18 @@ import com.example.excercise.mapper.StudentMapper;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StudentsService {
 
-  private StudentsRepository studentsRepository;
+
+  private final StudentsRepository studentsRepository;
+
+  private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
 
   public StudentIdResponse createStudent(CreateStudentRequest createStudentRequest){
     validateStudentRequest(createStudentRequest);
@@ -29,8 +33,7 @@ public class StudentsService {
         .grade(createStudentRequest.getGrade())
         .classNumber(createStudentRequest.getClassNumber())
         .build();
-    return StudentMapper.INSTANCE
-        .toStudentIdResponse(studentsRepository.save(student));
+    return studentMapper.toStudentIdResponse(studentsRepository.save(student));
   }
 
   private void validateStudentRequest(CreateStudentRequest createStudentRequest){
@@ -49,9 +52,7 @@ public class StudentsService {
     StudentEntity studentEntity = studentsRepository.findById(id)
         .orElseThrow(() -> new StudentNotFoundException(id));
     return StudentsResponse.builder()
-        .data(List.of(StudentMapper
-            .INSTANCE
-            .toStudentResponse(studentEntity)))
+        .data(List.of(studentMapper.toStudentResponse(studentEntity)))
         .build();
   }
 
@@ -59,7 +60,7 @@ public class StudentsService {
     List<StudentEntity> allStudents = studentsRepository.findAll();
     return StudentsResponse.builder()
         .data(allStudents.stream()
-            .map(StudentMapper.INSTANCE::toStudentResponse)
+            .map(studentMapper::toStudentResponse)
             .collect(Collectors.toList()))
         .build();
   }
