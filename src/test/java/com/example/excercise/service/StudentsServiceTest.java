@@ -142,7 +142,7 @@ class StudentsServiceTest {
   }
 
   @Test
-  void should_return_student_when_can_not_find_student() {
+  void should_throw_exception_when_can_not_find_student() {
     when(studentsRepository.findById(10)).thenReturn(Optional.empty());
 
     Executable executable = () -> studentsService.findStudentById(10);
