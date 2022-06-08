@@ -1,6 +1,7 @@
 package com.example.excercise.service;
 
 
+import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
@@ -72,5 +73,9 @@ public class StudentsService {
             .map(studentMapper::toStudentResponse)
             .collect(Collectors.toList()))
         .build();
+  }
+
+  public String submitHomework(Integer studentId, CreateHomeworkRequest createHomeworkRequest) {
+    return null;
   }
 }

@@ -1,5 +1,6 @@
 package com.example.excercise.controller;
 
+import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
@@ -42,5 +43,12 @@ public class StudentsController {
       return studentsService.findAllStudents();
     }
   }
+
+  @PostMapping("/{studentId}/homework")
+  @ResponseStatus(HttpStatus.OK)
+  public String createStudentHomework(@PathVariable Integer studentId, @RequestBody CreateHomeworkRequest createHomeworkRequest){
+    return "id :" + studentsService.submitHomework(studentId, createHomeworkRequest);
+  }
+
 
 }

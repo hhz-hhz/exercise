@@ -193,4 +193,6 @@ class StudentsServiceTest {
     assertThat(requiredStudents.get(0).getClassNumber(), is(8));
     assertThat(requiredStudents.get(0).getId(), is(9));
   }
+
+
 }
