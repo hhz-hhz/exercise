@@ -5,6 +5,7 @@ import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.service.StudentsService;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +37,9 @@ public class StudentsController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public StudentsResponse getRequiredStudents(@RequestParam(required = false, value = "name") String name){
-    if(name != null){
-      return studentsService.findStudentsByName(name);
+  public StudentsResponse getRequiredStudents(@RequestParam(required = false)Map<String, String> query){
+    if(query.containsKey("name")){
+      return studentsService.findStudentsByName(query.get("name"));
     }else{
       return studentsService.findAllStudents();
     }
