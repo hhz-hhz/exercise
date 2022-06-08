@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
@@ -194,5 +195,14 @@ class StudentsServiceTest {
     assertThat(requiredStudents.get(0).getId(), is(9));
   }
 
+  @Test
+  void should_throw_not_found_exception_when_student_is_not_exist() {
+    when(studentsRepository.existById(100)).thenReturn(false);
+
+    Executable executable = () -> studentsService.submitHomework(100, CreateHomeworkRequest.builder().build());
+    Exception exception = assertThrows(StudentNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Student not found with id: "+100));
+  }
 
 }

@@ -5,6 +5,7 @@ import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
+import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
@@ -76,6 +77,9 @@ public class StudentsService {
   }
 
   public String submitHomework(Integer studentId, CreateHomeworkRequest createHomeworkRequest) {
+    if(!studentsRepository.existById(studentId)){
+      throw new StudentNotFoundException(studentId);
+    }
     return null;
   }
 }
