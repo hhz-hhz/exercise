@@ -21,7 +21,7 @@ public class StudentsRepository {
     return jpaStudentRepository.findAll();
   }
 
-  public List<StudentEntity> findByName(String name) {
-    return jpaStudentRepository.findByName(name);
+  public List<StudentEntity> findAllByName(String name) {
+    return jpaStudentRepository.findAllByName(name);
   }
 }

@@ -66,7 +66,7 @@ public class StudentsService {
   }
 
   public StudentsResponse findStudentsByName(String name) {
-    List<StudentEntity> requiredStudents = studentsRepository.findByName(name);
+    List<StudentEntity> requiredStudents = studentsRepository.findAllByName(name);
     return StudentsResponse.builder()
         .data(requiredStudents.stream()
             .map(studentMapper::toStudentResponse)

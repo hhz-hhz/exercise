@@ -183,7 +183,7 @@ class StudentsServiceTest {
 
   @Test
   void should_return_students_when_name_is_required() {
-    when(studentsRepository.findByName("jack")).thenReturn(List.of(student));
+    when(studentsRepository.findAllByName("jack")).thenReturn(List.of(student));
 
     List<StudentsResponse.StudentResponse> requiredStudents = studentsService.findStudentsByName("jack").getData();
 
