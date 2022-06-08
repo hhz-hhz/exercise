@@ -9,12 +9,19 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ParameterExceptionHandler extends ResponseEntityExceptionHandler {
+public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = ParameterException.class)
-  protected ResponseEntity<Object> handleMessagePublisherException(
+  protected ResponseEntity<Object> handleParameterException(
       RuntimeException ex, WebRequest request) {
     return handleExceptionInternal(
         ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+  }
+
+  @ExceptionHandler(value = StudentNotFoundException.class)
+  protected ResponseEntity<Object> handleNotFoundException(
+      RuntimeException ex, WebRequest request) {
+    return handleExceptionInternal(
+        ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 }
