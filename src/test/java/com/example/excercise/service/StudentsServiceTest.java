@@ -9,11 +9,13 @@ import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
+import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
+import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,9 @@ class StudentsServiceTest {
 
   @Mock
   private StudentsRepository studentsRepository;
+
+  @Mock
+  private HomeworkRepository homeworkRepository;
 
   private final CreateStudentRequest studentRequest = CreateStudentRequest.builder()
       .name("jack")
@@ -205,4 +210,19 @@ class StudentsServiceTest {
     assertThat(exception.getMessage(), is("Student not found with id: "+100));
   }
 
+  @Test
+  void should_return_homework_id_when_student_submit_homework() {
+    ArgumentCaptor<HomeworkEntity> captor = ArgumentCaptor.forClass(HomeworkEntity.class);
+    HomeworkEntity givenHomeworkEntity = HomeworkEntity.builder().id(0).student_id(1).content("homework").build();
+    when(homeworkRepository.save(captor.capture())).thenReturn(givenHomeworkEntity);
+    when(studentsRepository.existById(1)).thenReturn(true);
+    Integer homeworkId = studentsService.submitHomework(1, CreateHomeworkRequest.builder()
+        .content("homework")
+        .build());
+
+    HomeworkEntity homeworkEntity = captor.getValue();
+    assertThat(homeworkEntity.getStudent_id(), is(1));
+    assertThat(homeworkEntity.getContent(), is("homework"));
+    assertThat(homeworkId, is(0));
+  }
 }

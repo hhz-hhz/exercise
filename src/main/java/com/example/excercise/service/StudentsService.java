@@ -12,6 +12,7 @@ import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.mapper.StudentMapper;
+import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class StudentsService {
 
 
   private final StudentsRepository studentsRepository;
+
+  private final HomeworkRepository homeworkRepository;
 
   private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
 
@@ -76,10 +79,14 @@ public class StudentsService {
         .build();
   }
 
-  public String submitHomework(Integer studentId, CreateHomeworkRequest createHomeworkRequest) {
+  public Integer submitHomework(Integer studentId, CreateHomeworkRequest createHomeworkRequest) {
     if(!studentsRepository.existById(studentId)){
       throw new StudentNotFoundException(studentId);
     }
-    return null;
+    HomeworkEntity homeworkEntity = HomeworkEntity.builder()
+        .student_id(studentId)
+        .content(createHomeworkRequest.getContent())
+        .build();
+    return homeworkRepository.save(homeworkEntity).getId();
   }
 }
