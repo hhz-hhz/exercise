@@ -3,6 +3,7 @@ package com.example.excercise.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
@@ -15,7 +16,6 @@ import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
-import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +35,6 @@ class StudentsServiceTest {
 
   @Mock
   private StudentsRepository studentsRepository;
-
-  @Mock
-  private HomeworkRepository homeworkRepository;
 
   private final CreateStudentRequest studentRequest = CreateStudentRequest.builder()
       .name("jack")
@@ -202,7 +199,7 @@ class StudentsServiceTest {
 
   @Test
   void should_throw_not_found_exception_when_student_is_not_exist() {
-    when(studentsRepository.existById(100)).thenReturn(false);
+    when(studentsRepository.findById(100)).thenReturn(Optional.empty());
 
     Executable executable = () -> studentsService.submitHomework(100, CreateHomeworkRequest.builder().build());
     Exception exception = assertThrows(StudentNotFoundException.class, executable);
@@ -213,16 +210,18 @@ class StudentsServiceTest {
   @Test
   void should_return_homework_id_when_student_submit_homework() {
     ArgumentCaptor<HomeworkEntity> captor = ArgumentCaptor.forClass(HomeworkEntity.class);
-    HomeworkEntity givenHomeworkEntity = HomeworkEntity.builder().id(0).student_id(1).content("homework").build();
-    when(homeworkRepository.save(captor.capture())).thenReturn(givenHomeworkEntity);
-    when(studentsRepository.existById(1)).thenReturn(true);
-    Integer homeworkId = studentsService.submitHomework(1, CreateHomeworkRequest.builder()
+    StudentEntity studentEntity = mock(StudentEntity.class);
+    Optional<StudentEntity> optionalStudentEntity = Optional.of(studentEntity);
+    when(studentsRepository.findById(7))
+        .thenReturn(optionalStudentEntity);
+    when(studentEntity.addHomework(captor.capture())).thenReturn(1);
+
+    Integer homeworkId = studentsService.submitHomework(7, CreateHomeworkRequest.builder()
         .content("homework")
         .build());
 
+    assertThat(homeworkId, is(1));
     HomeworkEntity homeworkEntity = captor.getValue();
-    assertThat(homeworkEntity.getStudent_id(), is(1));
     assertThat(homeworkEntity.getContent(), is("homework"));
-    assertThat(homeworkId, is(0));
   }
 }

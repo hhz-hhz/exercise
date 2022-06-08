@@ -20,10 +20,6 @@ public class StudentsRepository {
   public List<StudentEntity> findAll(){
     return jpaStudentRepository.findAll();
   }
-
-  public boolean existById(Integer id) {
-    return jpaStudentRepository.existsById(id);
-  }
   public List<StudentEntity> findAllByName(String name) {
     return jpaStudentRepository.findAllByName(name);
   }
