@@ -80,8 +80,12 @@ public class StudentsService {
     StudentEntity student = studentsRepository.findById(studentId)
         .orElseThrow(() -> new StudentNotFoundException(studentId));
     HomeworkEntity homeworkEntity = HomeworkEntity.builder()
+        .student(student)
         .content(createHomeworkRequest.getContent())
         .build();
-    return student.addHomework(homeworkEntity);
+    List<HomeworkEntity> homework = student.getHomework();
+    homework.add(homeworkEntity);
+    List<HomeworkEntity> homework1 = studentsRepository.save(student).getHomework();
+    return homework1.get(homework1.size() -1).getId();
   }
 }

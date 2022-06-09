@@ -3,7 +3,6 @@ package com.example.excercise.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
@@ -17,6 +16,7 @@ import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.repository.StudentsRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -209,19 +209,35 @@ class StudentsServiceTest {
 
   @Test
   void should_return_homework_id_when_student_submit_homework() {
-    ArgumentCaptor<HomeworkEntity> captor = ArgumentCaptor.forClass(HomeworkEntity.class);
-    StudentEntity studentEntity = mock(StudentEntity.class);
-    Optional<StudentEntity> optionalStudentEntity = Optional.of(studentEntity);
+    ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
+    StudentEntity studentById = StudentEntity
+        .builder()
+        .id(7)
+        .homework(new ArrayList<>())
+        .build();
+    Optional<StudentEntity> optionalStudentEntity = Optional.of(studentById);
     when(studentsRepository.findById(7))
         .thenReturn(optionalStudentEntity);
-    when(studentEntity.addHomework(captor.capture())).thenReturn(1);
+    when(studentsRepository.save(captor.capture()))
+        .thenReturn(StudentEntity
+            .builder()
+            .homework(List.of(HomeworkEntity
+                .builder()
+                    .id(1)
+                    .content("homework")
+                    .student(studentById)
+                .build()))
+            .build());
 
     Integer homeworkId = studentsService.submitHomework(7, CreateHomeworkRequest.builder()
         .content("homework")
         .build());
 
     assertThat(homeworkId, is(1));
-    HomeworkEntity homeworkEntity = captor.getValue();
-    assertThat(homeworkEntity.getContent(), is("homework"));
+    StudentEntity studentEntity = captor.getValue();
+    List<HomeworkEntity> homework = studentEntity.getHomework();
+    assertThat(homework.size(), is(1));
+    assertThat(homework.get(0).getContent(),is("homework"));
+    assertThat(homework.get(0).getStudent().getId(),is(7));
   }
 }

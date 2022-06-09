@@ -22,5 +22,6 @@ public class StudentsResponse {
     private String name;
     private Integer grade;
     private Integer classNumber;
+    private List<HomeworkResponse> homework;
   }
 }

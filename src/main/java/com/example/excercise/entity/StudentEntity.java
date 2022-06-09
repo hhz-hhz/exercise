@@ -27,11 +27,8 @@ public class StudentEntity {
   private Integer grade;
   private Integer classNumber;
 
-  @OneToMany(targetEntity = HomeworkEntity.class, cascade = CascadeType.ALL)
+  @OneToMany(targetEntity = HomeworkEntity.class, mappedBy = "student",
+      cascade = CascadeType.ALL, orphanRemoval = true)
   private List<HomeworkEntity> homework;
 
-  public Integer addHomework(HomeworkEntity homeworkEntity){
-    homework.add(homeworkEntity);
-    return homework.size();
-  }
 }
