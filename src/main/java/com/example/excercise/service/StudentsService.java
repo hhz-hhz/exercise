@@ -15,6 +15,7 @@ import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.mapper.StudentMapper;
 import com.example.excercise.repository.StudentsRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class StudentsService {
     StudentEntity student = studentsRepository.findById(studentId)
         .orElseThrow(() -> new StudentNotFoundException(studentId));
     HomeworkEntity homeworkEntity = HomeworkEntity.builder()
-        .student(student)
+        .student(new ArrayList<>(List.of(student)))
         .content(createHomeworkRequest.getContent())
         .build();
     student.getHomework().add(homeworkEntity);

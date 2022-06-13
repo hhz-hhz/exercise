@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,8 +32,11 @@ public class StudentEntity {
   private Integer grade;
   private Integer classNumber;
 
-  @OneToMany(targetEntity = HomeworkEntity.class, mappedBy = "student",
-      cascade = CascadeType.ALL, orphanRemoval = true)
+  @ManyToMany(cascade=CascadeType.ALL)
+  @JoinTable(
+      name = "students_homework",
+      joinColumns = @JoinColumn(name = "students_id"),
+      inverseJoinColumns = @JoinColumn(name = "homework_id"))
   private List<HomeworkEntity> homework;
 
 }
