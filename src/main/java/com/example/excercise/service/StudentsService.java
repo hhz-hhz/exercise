@@ -3,12 +3,14 @@ package com.example.excercise.service;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
+import com.example.excercise.exception.HomeworkNotFoundException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.mapper.StudentMapper;
@@ -83,9 +85,28 @@ public class StudentsService {
         .student(student)
         .content(createHomeworkRequest.getContent())
         .build();
-    List<HomeworkEntity> homework = student.getHomework();
-    homework.add(homeworkEntity);
-    List<HomeworkEntity> homework1 = studentsRepository.save(student).getHomework();
-    return homework1.get(homework1.size() -1).getId();
+    student.getHomework().add(homeworkEntity);
+    List<HomeworkEntity> homework = studentsRepository.save(student).getHomework();
+    return homework.get(homework.size() -1).getId();
+  }
+
+  public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {
+    StudentEntity student = studentsRepository.findById(studentId)
+        .orElseThrow(() -> new StudentNotFoundException(studentId));
+    String content = updateHomeworkRequest.getContent();
+    Integer homeworkId = updateHomeworkRequest.getId();
+    List<HomeworkEntity> homeworkList = student.getHomework();
+    HomeworkEntity oldHomework = homeworkList
+        .stream()
+        .filter(homework -> homework.getId().equals(homeworkId))
+        .findFirst()
+        .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
+    int index = homeworkList.indexOf(oldHomework);
+    homeworkList.get(index).setContent(content);
+    StudentEntity studentEntity = studentsRepository.save(student);
+
+    return StudentsResponse.builder()
+        .data(List.of(studentMapper.toStudentResponse(studentEntity)))
+        .build();
   }
 }

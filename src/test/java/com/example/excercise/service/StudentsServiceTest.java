@@ -7,12 +7,15 @@ import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.request.UpdateHomeworkRequest;
+import com.example.excercise.dto.responce.HomeworkResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
+import com.example.excercise.exception.HomeworkNotFoundException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.repository.StudentsRepository;
@@ -239,5 +242,74 @@ class StudentsServiceTest {
     assertThat(homework.size(), is(1));
     assertThat(homework.get(0).getContent(),is("homework"));
     assertThat(homework.get(0).getStudent().getId(),is(7));
+  }
+
+  @Test
+  void should_throw_not_found_exception_when_student_updates_homework_and_student_is_not_exist() {
+    when(studentsRepository.findById(100)).thenReturn(Optional.empty());
+
+    Executable executable = () -> studentsService.updateHomework(100, UpdateHomeworkRequest.builder().build());
+    Exception exception = assertThrows(StudentNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Student not found with id: "+100));
+  }
+  @Test
+  void should_throw_not_found_exception_when_student_updates_homework_and_homework_is_not_exist() {
+    when(studentsRepository.findById(100))
+        .thenReturn(Optional.of(StudentEntity
+        .builder()
+        .homework(List.of())
+        .build()));
+
+    Executable executable = () -> studentsService.updateHomework(100, UpdateHomeworkRequest.builder().id(1).build());
+    Exception exception = assertThrows(HomeworkNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Homework not found with id: "+1));
+  }
+
+  @Test
+  void should_return_student_when_student_homework_update_successfully() {
+    ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
+    StudentEntity studentById = StudentEntity
+        .builder()
+        .id(1)
+        .homework(new ArrayList<>(List.of(HomeworkEntity.builder()
+            .id(2)
+            .content("hello")
+            .build())))
+        .build();
+    when(studentsRepository.findById(1))
+        .thenReturn(Optional.of(studentById));
+    when(studentsRepository.save(captor.capture()))
+        .thenReturn(StudentEntity
+            .builder()
+            .id(1)
+            .homework(List.of(HomeworkEntity
+                .builder()
+                .id(2)
+                .content("update")
+                .student(studentById)
+                .build()))
+            .build());
+
+
+    List<StudentsResponse.StudentResponse> actual = studentsService.updateHomework(1, UpdateHomeworkRequest.builder()
+            .id(2)
+            .content("update")
+            .build())
+        .getData();
+
+    StudentEntity studentEntity = captor.getValue();
+    List<HomeworkEntity> homework = studentEntity.getHomework();
+    assertThat(homework.size(), is(1));
+    assertThat(homework.get(0).getId(), is(2));
+    assertThat(homework.get(0).getContent(),is("update"));
+
+    assertThat(actual.size(), is(1));
+    assertThat(actual.get(0).getId(), is(1));
+    List<HomeworkResponse> homeworkList = actual.get(0).getHomework();
+    assertThat(homeworkList.size(), is(1));
+    assertThat(homeworkList.get(0).getId(), is(2));
+    assertThat(homeworkList.get(0).getContent(), is("update"));
   }
 }

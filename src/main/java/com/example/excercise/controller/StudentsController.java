@@ -2,6 +2,7 @@ package com.example.excercise.controller;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
+import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.service.StudentsService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,8 +50,12 @@ public class StudentsController {
   @PostMapping("/{studentId}/homework")
   @ResponseStatus(HttpStatus.OK)
   public String createStudentHomework(@PathVariable Integer studentId, @RequestBody CreateHomeworkRequest createHomeworkRequest){
-    return "id :" + studentsService.submitHomework(studentId, createHomeworkRequest);
+    return "{\nid :" + studentsService.submitHomework(studentId, createHomeworkRequest)+"\n}";
   }
 
-
+  @PutMapping("/{studentId}/homework")
+  @ResponseStatus(HttpStatus.OK)
+  public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
+    return studentsService.updateHomework(studentId, updateHomeworkRequest);
+  }
 }
