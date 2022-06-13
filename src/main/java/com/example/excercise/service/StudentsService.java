@@ -84,6 +84,7 @@ public class StudentsService {
         .orElseThrow(() -> new StudentNotFoundException(studentId));
     HomeworkEntity homeworkEntity = HomeworkEntity.builder()
         .student(new ArrayList<>(List.of(student)))
+        .topic(createHomeworkRequest.getTopic())
         .content(createHomeworkRequest.getContent())
         .build();
     student.getHomework().add(homeworkEntity);
@@ -94,7 +95,6 @@ public class StudentsService {
   public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {
     StudentEntity student = studentsRepository.findById(studentId)
         .orElseThrow(() -> new StudentNotFoundException(studentId));
-    String content = updateHomeworkRequest.getContent();
     Integer homeworkId = updateHomeworkRequest.getId();
     List<HomeworkEntity> homeworkList = student.getHomework();
     HomeworkEntity oldHomework = homeworkList
@@ -103,7 +103,8 @@ public class StudentsService {
         .findFirst()
         .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
     int index = homeworkList.indexOf(oldHomework);
-    homeworkList.get(index).setContent(content);
+    homeworkList.get(index).setTopic(updateHomeworkRequest.getTopic());
+    homeworkList.get(index).setContent(updateHomeworkRequest.getContent());
     StudentEntity studentEntity = studentsRepository.save(student);
 
     return StudentsResponse.builder()

@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateHomeworkRequest {
+  private String topic;
   private String content;
 }

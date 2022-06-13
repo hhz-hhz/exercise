@@ -28,6 +28,7 @@ public class HomeworkEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+  private String topic;
   private String content;
 
   @ManyToMany(mappedBy = "homework")

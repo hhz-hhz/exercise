@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HomeworkResponse {
   private Integer id;
+  private String topic;
   private String content;
 }
