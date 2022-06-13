@@ -228,7 +228,7 @@ class StudentsServiceTest {
                 .builder()
                     .id(1)
                     .content("homework")
-                    .student(studentById)
+                    .student(List.of(studentById))
                 .build()))
             .build());
 
@@ -241,7 +241,7 @@ class StudentsServiceTest {
     List<HomeworkEntity> homework = studentEntity.getHomework();
     assertThat(homework.size(), is(1));
     assertThat(homework.get(0).getContent(),is("homework"));
-    assertThat(homework.get(0).getStudent().getId(),is(7));
+    assertThat(homework.get(0).getStudent().get(0).getId(),is(7));
   }
 
   @Test
@@ -275,6 +275,7 @@ class StudentsServiceTest {
         .id(1)
         .homework(new ArrayList<>(List.of(HomeworkEntity.builder()
             .id(2)
+            .topic("homework")
             .content("hello")
             .build())))
         .build();
@@ -287,8 +288,9 @@ class StudentsServiceTest {
             .homework(List.of(HomeworkEntity
                 .builder()
                 .id(2)
+                .topic("homework")
                 .content("update")
-                .student(studentById)
+                .student(new ArrayList<>(List.of(studentById)))
                 .build()))
             .build());
 
@@ -303,6 +305,7 @@ class StudentsServiceTest {
     List<HomeworkEntity> homework = studentEntity.getHomework();
     assertThat(homework.size(), is(1));
     assertThat(homework.get(0).getId(), is(2));
+    assertThat(homework.get(0).getTopic(), is("homework"));
     assertThat(homework.get(0).getContent(),is("update"));
 
     assertThat(actual.size(), is(1));
@@ -310,6 +313,7 @@ class StudentsServiceTest {
     List<HomeworkResponse> homeworkList = actual.get(0).getHomework();
     assertThat(homeworkList.size(), is(1));
     assertThat(homeworkList.get(0).getId(), is(2));
+    assertThat(homeworkList.get(0).getTopic(), is("homework"));
     assertThat(homeworkList.get(0).getContent(), is("update"));
   }
 }

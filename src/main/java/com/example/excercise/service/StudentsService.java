@@ -96,15 +96,21 @@ public class StudentsService {
     StudentEntity student = studentsRepository.findById(studentId)
         .orElseThrow(() -> new StudentNotFoundException(studentId));
     Integer homeworkId = updateHomeworkRequest.getId();
+    String topic = updateHomeworkRequest.getTopic();
+    String content = updateHomeworkRequest.getContent();
     List<HomeworkEntity> homeworkList = student.getHomework();
     HomeworkEntity oldHomework = homeworkList
         .stream()
         .filter(homework -> homework.getId().equals(homeworkId))
         .findFirst()
         .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
-    int index = homeworkList.indexOf(oldHomework);
-    homeworkList.get(index).setTopic(updateHomeworkRequest.getTopic());
-    homeworkList.get(index).setContent(updateHomeworkRequest.getContent());
+    HomeworkEntity homework = homeworkList.get(homeworkList.indexOf(oldHomework));
+    if(topic != null && !topic.isBlank()){
+      homework.setTopic(topic);
+    }
+    if(content != null && !content.isEmpty()){
+      homework.setContent(content);
+    }
     StudentEntity studentEntity = studentsRepository.save(student);
 
     return StudentsResponse.builder()
