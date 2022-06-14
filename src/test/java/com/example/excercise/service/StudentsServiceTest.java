@@ -9,6 +9,7 @@ import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.HomeworkResponse;
+import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.HomeworkEntity;
@@ -198,6 +199,67 @@ class StudentsServiceTest {
     assertThat(requiredStudents.get(0).getGrade(), is(1));
     assertThat(requiredStudents.get(0).getClassNumber(), is(8));
     assertThat(requiredStudents.get(0).getId(), is(9));
+  }
+
+  @Test
+  void should_return_studentGroups_when_using_group_by_homework_endpoint_and_queried_a_topic() {
+
+    List<HomeworkEntity> homework = List.of(HomeworkEntity.builder()
+        .topic("homework")
+            .student(List.of(StudentEntity
+                    .builder()
+                    .id(1)
+                    .name("nana")
+                    .grade(1)
+                    .classNumber(1)
+                    .build(),
+                StudentEntity.builder()
+                    .id(2)
+                    .name("jack")
+                    .grade(2)
+                    .classNumber(3)
+                    .build()))
+        .build());
+    when(studentsRepository.findAll())
+        .thenReturn(List.of(StudentEntity
+            .builder()
+                .id(1)
+                .name("nana")
+                .grade(1)
+                .classNumber(1)
+                .homework(homework)
+            .build(),
+            StudentEntity.builder()
+                .id(2)
+                .name("jack")
+                .grade(2)
+                .classNumber(3)
+                .homework(homework)
+            .build(),
+            StudentEntity.builder()
+                .id(3)
+                .name("momo")
+                .grade(2)
+                .classNumber(3)
+                .homework(List.of(HomeworkEntity.builder()
+                    .topic("ui")
+                    .build()))
+            .build()));
+
+    List<List<StudentGroupsResponse.StudentResponse>> groups = studentsService.findStudentGroupsByTopic("homework").getGroups();
+
+    assertThat(groups.size(), is(1));
+    List<StudentGroupsResponse.StudentResponse> students = groups.get(0);
+    assertThat(students.size(), is(2));
+    assertThat(students.get(0).getId(), is(1));
+    assertThat(students.get(0).getName(), is("nana"));
+    assertThat(students.get(0).getGrade(), is(1));
+    assertThat(students.get(0).getClassNumber(), is(1));
+
+    assertThat(students.get(1).getId(), is(2));
+    assertThat(students.get(1).getName(), is("jack"));
+    assertThat(students.get(1).getGrade(), is(2));
+    assertThat(students.get(1).getClassNumber(), is(3));
   }
 
   @Test

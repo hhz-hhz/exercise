@@ -3,6 +3,7 @@ package com.example.excercise.controller;
 import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.request.UpdateHomeworkRequest;
+import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.service.StudentsService;
@@ -57,5 +58,15 @@ public class StudentsController {
   @ResponseStatus(HttpStatus.OK)
   public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
     return studentsService.updateHomework(studentId, updateHomeworkRequest);
+  }
+
+  @GetMapping("/group-by-homework")
+  @ResponseStatus(HttpStatus.OK)
+  public StudentGroupsResponse getRequiredStudentGroups(@RequestParam(required = false)Map<String, String> query){
+    if(query.containsKey("topic")){
+      return studentsService.findStudentGroupsByTopic(query.get("topic"));
+    }else{
+      return StudentGroupsResponse.builder().build();
+    }
   }
 }
