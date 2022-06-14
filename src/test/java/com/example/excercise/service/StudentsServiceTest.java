@@ -266,7 +266,7 @@ class StudentsServiceTest {
   void should_throw_not_found_exception_when_student_is_not_exist() {
     when(studentsRepository.findById(100)).thenReturn(Optional.empty());
 
-    Executable executable = () -> studentsService.submitHomework(100, CreateHomeworkRequest.builder().build());
+    Executable executable = () -> studentsService.submitHomework(CreateHomeworkRequest.builder().student(List.of(100)).build());
     Exception exception = assertThrows(StudentNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Student not found with id: "+100));
@@ -294,7 +294,8 @@ class StudentsServiceTest {
                 .build()))
             .build());
 
-    Integer homeworkId = studentsService.submitHomework(7, CreateHomeworkRequest.builder()
+    Integer homeworkId = studentsService.submitHomework(CreateHomeworkRequest.builder()
+            .student(List.of(7))
         .content("homework")
         .build());
 

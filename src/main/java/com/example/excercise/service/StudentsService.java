@@ -19,6 +19,7 @@ import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
@@ -81,17 +82,24 @@ public class StudentsService {
         .build();
   }
 
-  public Integer submitHomework(Integer studentId, CreateHomeworkRequest createHomeworkRequest) {
-    StudentEntity student = studentsRepository.findById(studentId)
-        .orElseThrow(() -> new StudentNotFoundException(studentId));
+  public Integer submitHomework(CreateHomeworkRequest createHomeworkRequest) {
+    List<StudentEntity> studentsList = new ArrayList<>();
+    createHomeworkRequest.getStudent()
+        .forEach(studentId -> studentsList.add(studentsRepository.findById(studentId)
+            .orElseThrow(() -> new StudentNotFoundException(studentId))));
     HomeworkEntity homeworkEntity = HomeworkEntity.builder()
-        .student(new ArrayList<>(List.of(student)))
+        .student(new ArrayList<>(studentsList))
         .topic(createHomeworkRequest.getTopic())
         .content(createHomeworkRequest.getContent())
         .build();
-    student.getHomework().add(homeworkEntity);
-    List<HomeworkEntity> homework = studentsRepository.save(student).getHomework();
-    return homework.get(homework.size() -1).getId();
+    studentsList.get(0).getHomework().add(homeworkEntity);
+    List<HomeworkEntity> homework = studentsRepository.save(studentsList.get(0)).getHomework();
+    HomeworkEntity newHomework = homework.get(homework.size() - 1);
+    studentsList.stream().skip(1).forEach(student -> {
+      student.getHomework().add(newHomework);
+      studentsRepository.save(student);
+    });
+    return newHomework.getId();
   }
 
   public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {

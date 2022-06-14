@@ -48,10 +48,10 @@ public class StudentsController {
     }
   }
 
-  @PostMapping("/{studentId}/homework")
+  @PostMapping("/homework")
   @ResponseStatus(HttpStatus.OK)
-  public String createStudentHomework(@PathVariable Integer studentId, @RequestBody CreateHomeworkRequest createHomeworkRequest){
-    return "{\nid :" + studentsService.submitHomework(studentId, createHomeworkRequest)+"\n}";
+  public String createStudentHomework(@RequestBody CreateHomeworkRequest createHomeworkRequest){
+    return "{\nid :" + studentsService.submitHomework(createHomeworkRequest)+"\n}";
   }
 
   @PutMapping("/{studentId}/homework")
