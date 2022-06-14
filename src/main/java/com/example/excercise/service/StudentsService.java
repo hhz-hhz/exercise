@@ -19,7 +19,6 @@ import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
@@ -139,7 +138,7 @@ public class StudentsService {
             .filter(o -> o.getTopic()
                 .equals(topic))
             .findFirst()
-            .orElseThrow(() -> new HomeworkNotFoundException(1))));
+            .orElse(null)));
     StudentGroupsResponse response = StudentGroupsResponse.builder()
         .groups(new ArrayList<>())
         .build();
