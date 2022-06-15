@@ -1,9 +1,17 @@
 spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: 6fecd065-cb31-41b4-985c-60f2fdf1720f
+        credential:
+          client-id: a4fb97f4-9e8a-41a2-81ca-135eb0bf316c
+          client-secret:
+        app-id-uri: api://a4fb97f4-9e8a-41a2-81ca-135eb0bf316c
   jpa:
     database: POSTGRESQL
     show-sql: true
-    hibernate:
-      ddl-auto: validate
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
