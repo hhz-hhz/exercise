@@ -91,6 +91,11 @@ public class StudentsService {
         .topic(createHomeworkRequest.getTopic())
         .content(createHomeworkRequest.getContent())
         .build();
+    HomeworkEntity newHomework = createHomework(studentsList, homeworkEntity);
+    return newHomework.getId();
+  }
+
+  private HomeworkEntity createHomework(List<StudentEntity> studentsList, HomeworkEntity homeworkEntity) {
     studentsList.get(0).getHomework().add(homeworkEntity);
     List<HomeworkEntity> homework = studentsRepository.save(studentsList.get(0)).getHomework();
     HomeworkEntity newHomework = homework.get(homework.size() - 1);
@@ -98,7 +103,7 @@ public class StudentsService {
       student.getHomework().add(newHomework);
       studentsRepository.save(student);
     });
-    return newHomework.getId();
+    return newHomework;
   }
 
   public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {
@@ -129,6 +134,18 @@ public class StudentsService {
 
   public StudentGroupsResponse findStudentGroupsByTopic(String topic) {
     List<StudentEntity> allStudents = studentsRepository.findAll();
+    HashSet<HomeworkEntity> groupHomework = getHomeworkWithSameTopic(topic, allStudents);
+    StudentGroupsResponse response = StudentGroupsResponse.builder()
+        .groups(new ArrayList<>())
+        .build();
+    groupHomework
+        .forEach(i -> response.getGroups().add(i.getStudent().stream()
+            .map(studentMapper::toStudentResponseInStudentGroupsResponse)
+            .collect(Collectors.toList())));
+    return response;
+  }
+
+  private HashSet<HomeworkEntity> getHomeworkWithSameTopic(String topic, List<StudentEntity> allStudents) {
     HashSet<HomeworkEntity> groupHomework = new HashSet<>();
     allStudents.stream()
         .filter(student -> student.getHomework()
@@ -139,13 +156,6 @@ public class StudentsService {
                 .equals(topic))
             .findFirst()
             .orElse(null)));
-    StudentGroupsResponse response = StudentGroupsResponse.builder()
-        .groups(new ArrayList<>())
-        .build();
-    groupHomework
-        .forEach(i -> response.getGroups().add(i.getStudent().stream()
-            .map(studentMapper::toStudentResponseInStudentGroupsResponse)
-            .collect(Collectors.toList())));
-    return response;
+    return groupHomework;
   }
 }

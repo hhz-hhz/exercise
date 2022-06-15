@@ -9,20 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration {
+public class SecurityConfiguration extends AadResourceServerWebSecurityConfigurerAdapter {
 
-  @Configuration
-  public static class AadSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      super.configure(http);
-      http
-          .csrf()
-          .disable()
-          .authorizeRequests()
-          .antMatchers("/students/group-by-homework")
-          .authenticated();
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    super.configure(http);
+    http
+        .csrf()
+        .disable()
+        .authorizeRequests()
+        .antMatchers("/students/group-by-homework")
+        .authenticated();
   }
 }
