@@ -2,7 +2,6 @@ package com.example.excercise.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,9 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateStudentRequest {
-
-  private String name;
+public class CreateClassroomRequest {
   private int grade;
   private int classNumber;
 }
