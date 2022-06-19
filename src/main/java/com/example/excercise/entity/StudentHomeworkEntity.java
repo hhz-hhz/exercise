@@ -27,8 +27,6 @@ public class StudentHomeworkEntity {
   private Integer id;
 
   private String content;
-  private Integer classroom_id;
-  private Integer student_id;
   private String created_at;
 
   @ManyToOne(fetch = FetchType.LAZY)

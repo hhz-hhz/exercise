@@ -29,11 +29,4 @@ public class StudentEntity extends PeopleEntity{
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "student")
   private List<StudentHomeworkEntity> studentHomework;
-
-  @ManyToMany(cascade=CascadeType.ALL)
-  @JoinTable(
-      name = "students_homework",
-      joinColumns = @JoinColumn(name = "students_id"),
-      inverseJoinColumns = @JoinColumn(name = "homework_id"))
-  private List<HomeworkEntity> homework;
 }
