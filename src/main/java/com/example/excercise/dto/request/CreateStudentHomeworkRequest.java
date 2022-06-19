@@ -11,8 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateHomeworkRequest {
+public class CreateStudentHomeworkRequest {
   private String content;
-  private Integer classroom_id;
-  private Integer teacher_id;
+  private Integer student_id;
 }

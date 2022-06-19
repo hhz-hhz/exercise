@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class HomeworkResponse {
   private Integer id;
   private String topic;
-  private String content;
 }

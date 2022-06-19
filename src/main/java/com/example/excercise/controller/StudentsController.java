@@ -1,6 +1,7 @@
 package com.example.excercise.controller;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
+import com.example.excercise.dto.request.CreateStudentHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.StudentGroupsResponse;
@@ -48,25 +49,25 @@ public class StudentsController {
     }
   }
 
-  @PostMapping("/homework")
+  @PostMapping("/homework/{homeworkId}")
   @ResponseStatus(HttpStatus.OK)
-  public String createStudentHomework(@RequestBody CreateHomeworkRequest createHomeworkRequest){
-    return "{\nid :" + studentService.submitHomework(createHomeworkRequest)+"\n}";
+  public String createStudentHomework(@PathVariable Integer homeworkId, @RequestBody CreateStudentHomeworkRequest createStudentHomeworkRequest){
+    return "{\nid :" + studentService.submitHomework(homeworkId, createStudentHomeworkRequest)+"\n}";
   }
 
-  @PutMapping("/{studentId}/homework")
-  @ResponseStatus(HttpStatus.OK)
-  public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
-    return studentService.updateHomework(studentId, updateHomeworkRequest);
-  }
-
-  @GetMapping("/group-by-homework")
-  @ResponseStatus(HttpStatus.OK)
-  public StudentGroupsResponse getRequiredStudentGroups(@RequestParam(required = false)Map<String, String> query){
-    if(query.containsKey("topic")){
-      return studentService.findStudentGroupsByTopic(query.get("topic"));
-    }else{
-      return StudentGroupsResponse.builder().build();
-    }
-  }
+//  @PutMapping("/{studentId}/homework")
+//  @ResponseStatus(HttpStatus.OK)
+//  public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
+//    return studentService.updateHomework(studentId, updateHomeworkRequest);
+//  }
+//
+//  @GetMapping("/group-by-homework")
+//  @ResponseStatus(HttpStatus.OK)
+//  public StudentGroupsResponse getRequiredStudentGroups(@RequestParam(required = false)Map<String, String> query){
+//    if(query.containsKey("topic")){
+//      return studentService.findStudentGroupsByTopic(query.get("topic"));
+//    }else{
+//      return StudentGroupsResponse.builder().build();
+//    }
+//  }
 }

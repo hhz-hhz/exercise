@@ -21,6 +21,5 @@ public class StudentsResponse {
     private Integer id;
     private String name;
     private ClassroomResponse classroom;
-    private List<HomeworkResponse> homework;
   }
 }
