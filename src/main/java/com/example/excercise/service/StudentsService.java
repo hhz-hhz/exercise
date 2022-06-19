@@ -7,14 +7,17 @@ import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
+import com.example.excercise.entity.ClassroomEntity;
 import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
+import com.example.excercise.exception.ClassroomNotFoundException;
 import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.HomeworkNotFoundException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.mapper.StudentMapper;
+import com.example.excercise.repository.ClassroomsRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,14 +34,20 @@ public class StudentsService {
 
   private final StudentsRepository studentsRepository;
 
+  private final ClassroomsRepository classroomsRepository;
+
   private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
 
   public StudentIdResponse createStudent(CreateStudentRequest createStudentRequest){
     validateStudentRequest(createStudentRequest);
+    Integer grade = createStudentRequest.getGrade();
+    Integer classNumber = createStudentRequest.getClassNumber();
+    ClassroomEntity classroom = classroomsRepository.findByGradeAndClassNumber(grade,
+        classNumber).orElseThrow(() -> new ClassroomNotFoundException(grade, classNumber));
+
     StudentEntity student = StudentEntity.builder()
         .name(createStudentRequest.getName())
-        .grade(createStudentRequest.getGrade())
-        .classNumber(createStudentRequest.getClassNumber())
+        .classroom(classroom)
         .build();
     return studentMapper.toStudentIdResponse(studentsRepository.save(student));
   }

@@ -12,13 +12,16 @@ import com.example.excercise.dto.responce.HomeworkResponse;
 import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
+import com.example.excercise.entity.ClassroomEntity;
 import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
+import com.example.excercise.exception.ClassroomNotFoundException;
 import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.HomeworkNotFoundException;
 import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
+import com.example.excercise.repository.ClassroomsRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,9 @@ class StudentsServiceTest {
   @Mock
   private StudentsRepository studentsRepository;
 
+  @Mock
+  private ClassroomsRepository classroomsRepository;
+
   private final CreateStudentRequest studentRequest = CreateStudentRequest.builder()
       .name("jack")
       .grade(1)
@@ -48,12 +54,21 @@ class StudentsServiceTest {
   private final StudentEntity student = StudentEntity.builder()
       .id(9)
       .name(studentRequest.getName())
-      .grade(studentRequest.getGrade())
-      .classNumber(studentRequest.getClassNumber())
+      .classroom(
+          ClassroomEntity.builder()
+              .grade(studentRequest.getGrade())
+              .classNumber(studentRequest.getClassNumber())
+              .build()
+      )
       .build();
 
   @Test
   void should_return_student_when_create_a_student() {
+    when(classroomsRepository.findByGradeAndClassNumber(1,8))
+        .thenReturn(Optional.of(ClassroomEntity.builder()
+                .grade(1)
+                .classNumber(8)
+            .build()));
     ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
     when(studentsRepository.save(captor.capture())).thenReturn(student);
 
@@ -61,9 +76,20 @@ class StudentsServiceTest {
 
     StudentEntity argument = captor.getValue();
     assertThat(argument.getName(), is("jack"));
-    assertThat(argument.getGrade(), is(1));
-    assertThat(argument.getClassNumber(), is(8));
+    assertThat(argument.getClassroom().getGrade(), is(1));
+    assertThat(argument.getClassroom().getClassNumber(), is(8));
     assertThat(actualStudent.getId(), is(9));
+  }
+
+  @Test
+  void should_throw_classroom_not_found_exception_when_create_a_student() {
+    when(classroomsRepository.findByGradeAndClassNumber(1,8))
+        .thenReturn(Optional.empty());
+
+    Executable executable = () -> studentsService.createStudent(studentRequest);
+    Exception exception = assertThrows(ClassroomNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Classroom not found with grade: 1and class: 8"));
   }
 
   @Test
@@ -143,8 +169,8 @@ class StudentsServiceTest {
     StudentsResponse.StudentResponse studentById = studentsService.findStudentById(9).getData().get(0);
 
     assertThat(studentById.getName(), is("jack"));
-    assertThat(studentById.getGrade(), is(1));
-    assertThat(studentById.getClassNumber(), is(8));
+    assertThat(studentById.getClassroom().getGrade(), is(1));
+    assertThat(studentById.getClassroom().getClassNumber(), is(8));
     assertThat(studentById.getId(), is(9));
   }
 
@@ -163,14 +189,22 @@ class StudentsServiceTest {
     StudentEntity student1 = StudentEntity.builder()
         .id(1)
         .name("nana")
-        .grade(2)
-        .classNumber(3)
+        .classroom(
+            ClassroomEntity.builder()
+                .grade(2)
+                .classNumber(3)
+                .build()
+        )
         .build();
     StudentEntity student2 = StudentEntity.builder()
         .id(2)
         .name("po")
-        .grade(3)
-        .classNumber(3)
+        .classroom(
+            ClassroomEntity.builder()
+                .grade(3)
+                .classNumber(3)
+                .build()
+        )
         .build();
     when(studentsRepository.findAll()).thenReturn(List.of(student1, student2));
 
@@ -179,12 +213,12 @@ class StudentsServiceTest {
     assertThat(allStudents.size(), is(2));
     assertThat(allStudents.get(0).getId(), is(1));
     assertThat(allStudents.get(0).getName(), is("nana"));
-    assertThat(allStudents.get(0).getGrade(), is(2));
-    assertThat(allStudents.get(0).getClassNumber(), is(3));
+    assertThat(allStudents.get(0).getClassroom().getGrade(), is(2));
+    assertThat(allStudents.get(0).getClassroom().getClassNumber(), is(3));
     assertThat(allStudents.get(1).getId(), is(2));
     assertThat(allStudents.get(1).getName(), is("po"));
-    assertThat(allStudents.get(1).getGrade(), is(3));
-    assertThat(allStudents.get(1).getClassNumber(), is(3));
+    assertThat(allStudents.get(1).getClassroom().getGrade(), is(3));
+    assertThat(allStudents.get(1).getClassroom().getClassNumber(), is(3));
 
   }
 
@@ -196,8 +230,8 @@ class StudentsServiceTest {
 
     assertThat(requiredStudents.size(), is(1));
     assertThat(requiredStudents.get(0).getName(), is("jack"));
-    assertThat(requiredStudents.get(0).getGrade(), is(1));
-    assertThat(requiredStudents.get(0).getClassNumber(), is(8));
+    assertThat(requiredStudents.get(0).getClassroom().getGrade(), is(1));
+    assertThat(requiredStudents.get(0).getClassroom().getClassNumber(), is(8));
     assertThat(requiredStudents.get(0).getId(), is(9));
   }
 
@@ -210,14 +244,22 @@ class StudentsServiceTest {
                     .builder()
                     .id(1)
                     .name("nana")
-                    .grade(1)
-                    .classNumber(1)
+                    .classroom(
+                        ClassroomEntity.builder()
+                            .grade(1)
+                            .classNumber(1)
+                            .build()
+                    )
                     .build(),
                 StudentEntity.builder()
                     .id(2)
                     .name("jack")
-                    .grade(2)
-                    .classNumber(3)
+                    .classroom(
+                        ClassroomEntity.builder()
+                            .grade(2)
+                            .classNumber(3)
+                            .build()
+                    )
                     .build()))
         .build());
     when(studentsRepository.findAll())
@@ -225,22 +267,34 @@ class StudentsServiceTest {
             .builder()
                 .id(1)
                 .name("nana")
-                .grade(1)
-                .classNumber(1)
+                .classroom(
+                    ClassroomEntity.builder()
+                        .grade(1)
+                        .classNumber(1)
+                        .build()
+                )
                 .homework(homework)
             .build(),
             StudentEntity.builder()
                 .id(2)
                 .name("jack")
-                .grade(2)
-                .classNumber(3)
+                .classroom(
+                    ClassroomEntity.builder()
+                        .grade(2)
+                        .classNumber(3)
+                        .build()
+                )
                 .homework(homework)
             .build(),
             StudentEntity.builder()
                 .id(3)
                 .name("momo")
-                .grade(2)
-                .classNumber(3)
+                .classroom(
+                    ClassroomEntity.builder()
+                        .grade(2)
+                        .classNumber(3)
+                        .build()
+                )
                 .homework(List.of(HomeworkEntity.builder()
                     .topic("ui")
                     .build()))
@@ -253,13 +307,13 @@ class StudentsServiceTest {
     assertThat(students.size(), is(2));
     assertThat(students.get(0).getId(), is(1));
     assertThat(students.get(0).getName(), is("nana"));
-    assertThat(students.get(0).getGrade(), is(1));
-    assertThat(students.get(0).getClassNumber(), is(1));
+    assertThat(students.get(0).getClassroom().getGrade(), is(1));
+    assertThat(students.get(0).getClassroom().getClassNumber(), is(1));
 
     assertThat(students.get(1).getId(), is(2));
     assertThat(students.get(1).getName(), is("jack"));
-    assertThat(students.get(1).getGrade(), is(2));
-    assertThat(students.get(1).getClassNumber(), is(3));
+    assertThat(students.get(1).getClassroom().getGrade(), is(2));
+    assertThat(students.get(1).getClassroom().getClassNumber(), is(3));
   }
 
   @Test

@@ -20,8 +20,7 @@ public class StudentsResponse {
   public static class StudentResponse{
     private Integer id;
     private String name;
-    private Integer grade;
-    private Integer classNumber;
+    private ClassroomResponse classroom;
     private List<HomeworkResponse> homework;
   }
 }

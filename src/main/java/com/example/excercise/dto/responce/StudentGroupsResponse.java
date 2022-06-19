@@ -20,7 +20,6 @@ public class StudentGroupsResponse {
   public static class StudentResponse{
     private Integer id;
     private String name;
-    private Integer grade;
-    private Integer classNumber;
+    private ClassroomResponse classroom;
   }
 }
