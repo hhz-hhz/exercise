@@ -35,10 +35,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class StudentsServiceTest {
+class StudentServiceTest {
 
   @InjectMocks
-  private StudentsService studentsService;
+  private StudentService studentService;
 
   @Mock
   private StudentsRepository studentsRepository;
@@ -72,7 +72,7 @@ class StudentsServiceTest {
     ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
     when(studentsRepository.save(captor.capture())).thenReturn(student);
 
-    StudentIdResponse actualStudent = studentsService.createStudent(studentRequest);
+    StudentIdResponse actualStudent = studentService.createStudent(studentRequest);
 
     StudentEntity argument = captor.getValue();
     assertThat(argument.getName(), is("jack"));
@@ -86,7 +86,7 @@ class StudentsServiceTest {
     when(classroomsRepository.findByGradeAndClassNumber(1,8))
         .thenReturn(Optional.empty());
 
-    Executable executable = () -> studentsService.createStudent(studentRequest);
+    Executable executable = () -> studentService.createStudent(studentRequest);
     Exception exception = assertThrows(ClassroomNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Classroom not found with grade: 1and class: 8"));
@@ -100,7 +100,7 @@ class StudentsServiceTest {
         .classNumber(1)
         .build();
 
-    Executable executable = () -> studentsService.createStudent(studentNameNull);
+    Executable executable = () -> studentService.createStudent(studentNameNull);
     Exception exception = assertThrows(NameIsNullException.class, executable);
 
     assertThat(exception.getMessage(), is("Name is required"));
@@ -114,7 +114,7 @@ class StudentsServiceTest {
         .classNumber(1)
         .build();
 
-    Executable executable = () -> studentsService.createStudent(student);
+    Executable executable = () -> studentService.createStudent(student);
     Exception exception = assertThrows(GradeNotValidatedException.class, executable);
 
     assertThat(exception.getMessage(), is("Grade should be on a scale of 1 to 9"));
@@ -128,7 +128,7 @@ class StudentsServiceTest {
         .classNumber(1)
         .build();
 
-    Executable executable = () -> studentsService.createStudent(student);
+    Executable executable = () -> studentService.createStudent(student);
     Exception exception = assertThrows(GradeNotValidatedException.class, executable);
 
     assertThat(exception.getMessage(), is("Grade should be on a scale of 1 to 9"));
@@ -142,7 +142,7 @@ class StudentsServiceTest {
         .classNumber(200)
         .build();
 
-    Executable executable = () -> studentsService.createStudent(student);
+    Executable executable = () -> studentService.createStudent(student);
     Exception exception = assertThrows(ClassNumberNotValidatedException.class, executable);
 
     assertThat(exception.getMessage(), is("Class number should be on a scale of 1 to 20"));
@@ -156,7 +156,7 @@ class StudentsServiceTest {
         .classNumber(0)
         .build();
 
-    Executable executable = () -> studentsService.createStudent(student);
+    Executable executable = () -> studentService.createStudent(student);
     Exception exception = assertThrows(ClassNumberNotValidatedException.class, executable);
 
     assertThat(exception.getMessage(), is("Class number should be on a scale of 1 to 20"));
@@ -166,7 +166,7 @@ class StudentsServiceTest {
   void should_return_student_when_find_exist_student() {
     when(studentsRepository.findById(9)).thenReturn(Optional.ofNullable(student));
 
-    StudentsResponse.StudentResponse studentById = studentsService.findStudentById(9).getData().get(0);
+    StudentsResponse.StudentResponse studentById = studentService.findStudentById(9).getData().get(0);
 
     assertThat(studentById.getName(), is("jack"));
     assertThat(studentById.getClassroom().getGrade(), is(1));
@@ -178,7 +178,7 @@ class StudentsServiceTest {
   void should_throw_exception_when_can_not_find_student() {
     when(studentsRepository.findById(10)).thenReturn(Optional.empty());
 
-    Executable executable = () -> studentsService.findStudentById(10);
+    Executable executable = () -> studentService.findStudentById(10);
     Exception exception = assertThrows(StudentNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Student not found with id: "+10));
@@ -208,7 +208,7 @@ class StudentsServiceTest {
         .build();
     when(studentsRepository.findAll()).thenReturn(List.of(student1, student2));
 
-    List<StudentsResponse.StudentResponse>allStudents = studentsService.findAllStudents().getData();
+    List<StudentsResponse.StudentResponse>allStudents = studentService.findAllStudents().getData();
 
     assertThat(allStudents.size(), is(2));
     assertThat(allStudents.get(0).getId(), is(1));
@@ -226,7 +226,7 @@ class StudentsServiceTest {
   void should_return_students_when_name_is_required() {
     when(studentsRepository.findAllByName("jack")).thenReturn(List.of(student));
 
-    List<StudentsResponse.StudentResponse> requiredStudents = studentsService.findStudentsByName("jack").getData();
+    List<StudentsResponse.StudentResponse> requiredStudents = studentService.findStudentsByName("jack").getData();
 
     assertThat(requiredStudents.size(), is(1));
     assertThat(requiredStudents.get(0).getName(), is("jack"));
@@ -300,7 +300,7 @@ class StudentsServiceTest {
                     .build()))
             .build()));
 
-    List<List<StudentGroupsResponse.StudentResponse>> groups = studentsService.findStudentGroupsByTopic("homework").getGroups();
+    List<List<StudentGroupsResponse.StudentResponse>> groups = studentService.findStudentGroupsByTopic("homework").getGroups();
 
     assertThat(groups.size(), is(1));
     List<StudentGroupsResponse.StudentResponse> students = groups.get(0);
@@ -320,7 +320,7 @@ class StudentsServiceTest {
   void should_throw_not_found_exception_when_student_is_not_exist() {
     when(studentsRepository.findById(100)).thenReturn(Optional.empty());
 
-    Executable executable = () -> studentsService.submitHomework(CreateHomeworkRequest.builder().student(List.of(100)).build());
+    Executable executable = () -> studentService.submitHomework(CreateHomeworkRequest.builder().student(List.of(100)).build());
     Exception exception = assertThrows(StudentNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Student not found with id: "+100));
@@ -348,7 +348,7 @@ class StudentsServiceTest {
                 .build()))
             .build());
 
-    Integer homeworkId = studentsService.submitHomework(CreateHomeworkRequest.builder()
+    Integer homeworkId = studentService.submitHomework(CreateHomeworkRequest.builder()
             .student(List.of(7))
         .content("homework")
         .build());
@@ -365,7 +365,7 @@ class StudentsServiceTest {
   void should_throw_not_found_exception_when_student_updates_homework_and_student_is_not_exist() {
     when(studentsRepository.findById(100)).thenReturn(Optional.empty());
 
-    Executable executable = () -> studentsService.updateHomework(100, UpdateHomeworkRequest.builder().build());
+    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().build());
     Exception exception = assertThrows(StudentNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Student not found with id: "+100));
@@ -378,7 +378,7 @@ class StudentsServiceTest {
         .homework(List.of())
         .build()));
 
-    Executable executable = () -> studentsService.updateHomework(100, UpdateHomeworkRequest.builder().id(1).build());
+    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().id(1).build());
     Exception exception = assertThrows(HomeworkNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Homework not found with id: "+1));
@@ -412,7 +412,7 @@ class StudentsServiceTest {
             .build());
 
 
-    List<StudentsResponse.StudentResponse> actual = studentsService.updateHomework(1, UpdateHomeworkRequest.builder()
+    List<StudentsResponse.StudentResponse> actual = studentService.updateHomework(1, UpdateHomeworkRequest.builder()
             .id(2)
             .content("update")
             .build())

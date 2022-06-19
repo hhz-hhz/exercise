@@ -6,7 +6,7 @@ import com.example.excercise.dto.request.UpdateHomeworkRequest;
 import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
-import com.example.excercise.service.StudentsService;
+import com.example.excercise.service.StudentService;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,47 +24,47 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/students")
 public class StudentsController {
 
-  private StudentsService studentsService;
+  private StudentService studentService;
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public StudentIdResponse createStudent(@RequestBody CreateStudentRequest createStudentRequest){
-    return studentsService.createStudent(createStudentRequest);
+    return studentService.createStudent(createStudentRequest);
   }
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public StudentsResponse getStudent(@PathVariable Integer id){
-    return studentsService.findStudentById(id);
+    return studentService.findStudentById(id);
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public StudentsResponse getRequiredStudents(@RequestParam(required = false)Map<String, String> query){
     if(query.containsKey("name")){
-      return studentsService.findStudentsByName(query.get("name"));
+      return studentService.findStudentsByName(query.get("name"));
     }else{
-      return studentsService.findAllStudents();
+      return studentService.findAllStudents();
     }
   }
 
   @PostMapping("/homework")
   @ResponseStatus(HttpStatus.OK)
   public String createStudentHomework(@RequestBody CreateHomeworkRequest createHomeworkRequest){
-    return "{\nid :" + studentsService.submitHomework(createHomeworkRequest)+"\n}";
+    return "{\nid :" + studentService.submitHomework(createHomeworkRequest)+"\n}";
   }
 
   @PutMapping("/{studentId}/homework")
   @ResponseStatus(HttpStatus.OK)
   public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
-    return studentsService.updateHomework(studentId, updateHomeworkRequest);
+    return studentService.updateHomework(studentId, updateHomeworkRequest);
   }
 
   @GetMapping("/group-by-homework")
   @ResponseStatus(HttpStatus.OK)
   public StudentGroupsResponse getRequiredStudentGroups(@RequestParam(required = false)Map<String, String> query){
     if(query.containsKey("topic")){
-      return studentsService.findStudentGroupsByTopic(query.get("topic"));
+      return studentService.findStudentGroupsByTopic(query.get("topic"));
     }else{
       return StudentGroupsResponse.builder().build();
     }
