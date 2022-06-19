@@ -17,4 +17,7 @@ import lombok.experimental.SuperBuilder;
 public class TeacherEntity extends PeopleEntity{
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "teacher")
   private List<ClassroomEntity> classrooms;
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "teacher")
+  private List<HomeworkEntity> homework;
 }
