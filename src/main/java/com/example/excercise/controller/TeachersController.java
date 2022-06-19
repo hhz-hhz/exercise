@@ -1,6 +1,7 @@
 package com.example.excercise.controller;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
+import com.example.excercise.service.TeacherService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/teachers")
 public class TeachersController {
 
-
+  private TeacherService teacherService;
 
   @PostMapping("/homework")
   @ResponseStatus(HttpStatus.OK)
   public String createHomework(@RequestBody CreateHomeworkRequest createHomeworkRequest){
-    return null;
+    return "id: " + teacherService.createHomework(createHomeworkRequest);
   }
 }

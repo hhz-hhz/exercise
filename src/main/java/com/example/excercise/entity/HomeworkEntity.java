@@ -31,7 +31,6 @@ public class HomeworkEntity {
   private String topic;
   private String content;
   private Integer classroom_id;
-  private Integer teacher_id;
   private String created_at;
 
   @ManyToMany(mappedBy = "homework")
