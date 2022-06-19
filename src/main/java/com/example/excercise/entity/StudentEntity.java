@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,8 @@ public class StudentEntity extends PeopleEntity{
   @JoinColumn(name = "classrooms_id", nullable = false)
   private ClassroomEntity classroom;
 
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "student")
+  private List<StudentHomeworkEntity> studentHomework;
 
   @ManyToMany(cascade=CascadeType.ALL)
   @JoinTable(
