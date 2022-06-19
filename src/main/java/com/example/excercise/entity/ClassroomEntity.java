@@ -31,11 +31,13 @@ public class ClassroomEntity {
   private Integer grade;
   private Integer classNumber;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "classrooms_id")
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "classroom")
   private List<StudentEntity> students;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "teachers_id")
   private TeacherEntity teacher;
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "classroom")
+  List<HomeworkEntity> homework;
 }
