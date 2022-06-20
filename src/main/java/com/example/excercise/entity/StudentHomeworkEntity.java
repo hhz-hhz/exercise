@@ -27,7 +27,6 @@ public class StudentHomeworkEntity {
   private Integer id;
 
   private String content;
-  private String created_at;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "students_id", nullable = false)

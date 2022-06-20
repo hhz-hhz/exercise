@@ -27,6 +27,7 @@ import com.example.excercise.repository.ClassroomsRepository;
 import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -365,7 +366,6 @@ class StudentServiceTest {
                 .builder()
                     .id(1)
                     .content("homework")
-                    .created_at("nana")
                     .student(studentById)
                     .homework(homeworkById)
                 .build()))
@@ -381,7 +381,6 @@ class StudentServiceTest {
     List<StudentHomeworkEntity> homework = studentEntity.getStudentHomework();
     assertThat(homework.size(), is(1));
     assertThat(homework.get(0).getContent(),is("homework"));
-    assertThat(homework.get(0).getCreated_at(), is("nana"));
     assertThat(homework.get(0).getStudent().getId(),is(7));
     assertThat(homework.get(0).getStudent().getName(),is("nana"));
     assertThat(homework.get(0).getHomework().getId(), is(1));
