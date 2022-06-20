@@ -6,12 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.example.excercise.dto.request.CreateHomeworkRequest;
+import com.example.excercise.dto.responce.StudentsHomeworkResponse;
 import com.example.excercise.entity.ClassroomEntity;
 import com.example.excercise.entity.HomeworkEntity;
+import com.example.excercise.entity.StudentHomeworkEntity;
 import com.example.excercise.entity.TeacherEntity;
 import com.example.excercise.exception.ClassroomNotFoundException;
 import com.example.excercise.exception.TeacherNotFoundException;
 import com.example.excercise.repository.TeachersRepository;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TeacherServiceTest {
   @Mock
   private TeachersRepository teachersRepository;
-  
+
   @InjectMocks
   private TeacherService teacherService;
 
@@ -78,7 +81,6 @@ class TeacherServiceTest {
                 .builder()
                     .id(1)
                     .content("homework")
-                    .created_at("nana")
                     .classroom(classroom)
                 .build()))
             .build());
@@ -96,10 +98,64 @@ class TeacherServiceTest {
     List<HomeworkEntity> homeworkList = teacher.getHomework();
     assertThat(homeworkList.size(), is(1));
     assertThat(homeworkList.get(0).getContent(), is("homework"));
-    assertThat(homeworkList.get(0).getCreated_at(), is("nana"));
     assertThat(homeworkList.get(0).getTeacher().getId(), is(2));
     assertThat(homeworkList.get(0).getTeacher().getName(), is("nana"));
     assertThat(homeworkList.get(0).getClassroom().getId(), is(1));
     assertThat(homeworkId, is(1));
+  }
+
+
+  @Test
+  void should_throw_teacher_not_found_exception_when_get_student_homework() {
+    when(teachersRepository.findById(1))
+        .thenReturn(Optional.empty());
+
+    Executable executable = () -> teacherService.getStudentHomework(1, 0, 0, Date.valueOf("2022-06-20"));
+    Exception exception = assertThrows(TeacherNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Teacher not found with id: 1"));
+
+  }
+
+  @Test
+  void should_throw_classroom_not_found_exception_when_get_student_homework() {
+    when(teachersRepository.findById(1))
+        .thenReturn(Optional.of(TeacherEntity.builder()
+                .classrooms(List.of())
+            .build()
+        ));
+
+    Executable executable = () -> teacherService.getStudentHomework(1, 1, 8, Date.valueOf("2022-06-20"));
+
+    Exception exception = assertThrows(ClassroomNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Classroom not found with grade: 1 and class: 8"));
+
+  }
+
+  @Test
+  void should_return_student_homework_list_when_get_student_homework() {
+    ClassroomEntity classroom = ClassroomEntity.builder().id(1).grade(1).classNumber(8).build();
+    when(teachersRepository.findById(1))
+        .thenReturn(Optional.of(TeacherEntity.builder()
+                .classrooms(List.of(classroom))
+                .homework(List.of(
+                    HomeworkEntity.builder()
+                        .classroom(classroom)
+                        .createdAt(Date.valueOf("2022-06-20"))
+                        .studentHomework(List.of(StudentHomeworkEntity.builder()
+                                .id(3)
+                                .content("test")
+                            .build()))
+                        .build())
+                )
+            .build()
+        ));
+
+    StudentsHomeworkResponse result = teacherService.getStudentHomework(1, 1, 8, Date.valueOf("2022-06-20"));
+
+    assertThat(result.getHomework().size(), is(1));
+    assertThat(result.getHomework().get(0).getId(), is(3));
+    assertThat(result.getHomework().get(0).getContent(), is("test"));
   }
 }

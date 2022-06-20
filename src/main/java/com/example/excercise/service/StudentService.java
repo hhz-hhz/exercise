@@ -102,7 +102,6 @@ public class StudentService {
         .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
     student.getStudentHomework().add(StudentHomeworkEntity.builder()
             .content(createStudentHomeworkRequest.getContent())
-            .created_at(student.getName())
             .student(student)
             .homework(homework)
         .build());
