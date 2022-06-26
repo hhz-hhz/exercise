@@ -1,6 +1,6 @@
 package com.example.excercise.entity;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Setter
@@ -32,9 +31,7 @@ public class HomeworkEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String content;
-
-  @CreationTimestamp
-  private Date createdAt;
+  private Instant createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "teachers_id")

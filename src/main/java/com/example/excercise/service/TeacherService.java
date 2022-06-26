@@ -10,12 +10,13 @@ import com.example.excercise.exception.HomeworkNotFoundException;
 import com.example.excercise.exception.TeacherNotFoundException;
 import com.example.excercise.mapper.StudentHomeworkMapper;
 import com.example.excercise.repository.TeachersRepository;
-import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import util.CustomizeDateUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +36,13 @@ public class TeacherService {
             .content(createHomeworkRequest.getContent())
             .teacher(teacher)
             .classroom(classroom)
+            .createdAt(CustomizeDateUtil.getStartTimeOfDay(Instant.now()))
         .build());
     List<HomeworkEntity> homework = teachersRepository.save(teacher).getHomework();
     return homework.get(homework.size()-1).getId();
   }
 
-  public StudentsHomeworkResponse getStudentsHomework(Integer id, Integer grade, Integer clazz, Date create_at) {
+  public StudentsHomeworkResponse getStudentsHomework(Integer id, Integer grade, Integer clazz, Instant create_at) {
     TeacherEntity teacher = teachersRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException(id));
     ClassroomEntity classroom = teacher.getClassrooms().stream()
         .filter(i -> i.getGrade().equals(grade) && i.getClassNumber().equals(clazz))
