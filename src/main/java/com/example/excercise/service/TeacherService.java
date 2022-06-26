@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
-import util.CustomizeDateUtil;
+import com.example.excercise.util.CustomizeDateUtil;
 
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package util;
+package com.example.excercise.util;
 
 import com.example.excercise.dto.request.CreateClassroomRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;

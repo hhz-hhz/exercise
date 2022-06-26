@@ -9,6 +9,7 @@ import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.NameIsNullException;
+import com.example.excercise.util.ValidationUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 

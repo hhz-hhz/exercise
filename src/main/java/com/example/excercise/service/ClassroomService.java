@@ -2,12 +2,10 @@ package com.example.excercise.service;
 
 import com.example.excercise.dto.request.CreateClassroomRequest;
 import com.example.excercise.entity.ClassroomEntity;
-import com.example.excercise.exception.ClassNumberNotValidatedException;
-import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.repository.ClassroomsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import util.ValidationUtil;
+import com.example.excercise.util.ValidationUtil;
 
 @Service
 @RequiredArgsConstructor
