@@ -1,34 +1,28 @@
 package com.example.excercise.service;
 
 
-import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.request.UpdateHomeworkRequest;
-import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.ClassroomEntity;
 import com.example.excercise.entity.HomeworkEntity;
 import com.example.excercise.entity.StudentEntity;
 import com.example.excercise.entity.StudentHomeworkEntity;
-import com.example.excercise.exception.ClassNumberNotValidatedException;
 import com.example.excercise.exception.ClassroomNotFoundException;
-import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.exception.HomeworkNotFoundException;
-import com.example.excercise.exception.NameIsNullException;
 import com.example.excercise.exception.StudentNotFoundException;
 import com.example.excercise.mapper.StudentMapper;
 import com.example.excercise.repository.ClassroomsRepository;
 import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import util.ValidationUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +38,7 @@ public class StudentService {
   private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
 
   public StudentIdResponse createStudent(CreateStudentRequest createStudentRequest){
-    validateStudentRequest(createStudentRequest);
+    ValidationUtil.validateStudentRequest(createStudentRequest);
     Integer grade = createStudentRequest.getGrade();
     Integer classNumber = createStudentRequest.getClassNumber();
     ClassroomEntity classroom = classroomsRepository.findByGradeAndClassNumber(grade,
@@ -57,17 +51,6 @@ public class StudentService {
     return studentMapper.toStudentIdResponse(studentsRepository.save(student));
   }
 
-  private void validateStudentRequest(CreateStudentRequest createStudentRequest){
-    if(createStudentRequest.getName().isBlank()){
-      throw new NameIsNullException();
-    }
-    if(createStudentRequest.getGrade() < 1 || createStudentRequest.getGrade() > 9){
-      throw new GradeNotValidatedException();
-    }
-    if(createStudentRequest.getClassNumber() < 1 || createStudentRequest.getClassNumber() > 20){
-      throw new ClassNumberNotValidatedException();
-    }
-  }
 
   public StudentsResponse findStudentById(Integer id) {
     StudentEntity studentEntity = studentsRepository.findById(id)

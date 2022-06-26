@@ -7,6 +7,7 @@ import com.example.excercise.exception.GradeNotValidatedException;
 import com.example.excercise.repository.ClassroomsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import util.ValidationUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -14,19 +15,12 @@ public class ClassroomService {
   private final ClassroomsRepository classroomsRepository;
 
   public Integer createClassroom(CreateClassroomRequest createClassroomRequest) {
-    validateCreateClassroomRequest(createClassroomRequest);
+    ValidationUtil.validateCreateClassroomRequest(createClassroomRequest);
     return classroomsRepository.save(ClassroomEntity.builder()
             .grade(createClassroomRequest.getGrade())
             .classNumber(createClassroomRequest.getClassNumber())
         .build()).getId();
   }
 
-  private void validateCreateClassroomRequest(CreateClassroomRequest createClassroomRequest){
-    if(createClassroomRequest.getGrade() < 1 || createClassroomRequest.getGrade() > 9){
-      throw new GradeNotValidatedException();
-    }
-    if(createClassroomRequest.getClassNumber() < 1 || createClassroomRequest.getClassNumber() > 20){
-      throw new ClassNumberNotValidatedException();
-    }
-  }
+
 }
