@@ -9,9 +9,6 @@ spring:
           client-id: a4fb97f4-9e8a-41a2-81ca-135eb0bf316c
           client-secret:
         app-id-uri: api://a4fb97f4-9e8a-41a2-81ca-135eb0bf316c
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
