@@ -109,67 +109,23 @@ public class StudentService {
     return studentHomework.get(studentHomework.size() - 1).getId();
   }
 
-//  private HomeworkEntity createHomework(List<StudentEntity> studentsList, HomeworkEntity homeworkEntity) {
-//    studentsList.get(0).getHomework().add(homeworkEntity);
-//    List<HomeworkEntity> homework = studentsRepository.save(studentsList.get(0)).getHomework();
-//    HomeworkEntity newHomework = homework.get(homework.size() - 1);
-//    studentsList.stream().skip(1).forEach(student -> {
-//      student.getHomework().add(newHomework);
-//      studentsRepository.save(student);
-//    });
-//    return newHomework;
-//  }
-//
-//  public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {
-//    StudentEntity student = studentsRepository.findById(studentId)
-//        .orElseThrow(() -> new StudentNotFoundException(studentId));
-//    Integer homeworkId = updateHomeworkRequest.getId();
-//    String topic = updateHomeworkRequest.getTopic();
-//    String content = updateHomeworkRequest.getContent();
-//    List<HomeworkEntity> homeworkList = student.getHomework();
-//    HomeworkEntity oldHomework = homeworkList
-//        .stream()
-//        .filter(homework -> homework.getId().equals(homeworkId))
-//        .findFirst()
-//        .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
-//    HomeworkEntity homework = homeworkList.get(homeworkList.indexOf(oldHomework));
-//    if(topic != null && !topic.isBlank()){
-//      homework.setTopic(topic);
-//    }
-//    if(content != null && !content.isEmpty()){
-//      homework.setContent(content);
-//    }
-//    StudentEntity studentEntity = studentsRepository.save(student);
-//
-//    return StudentsResponse.builder()
-//        .data(List.of(studentMapper.toStudentResponseInStudentsResponse(studentEntity)))
-//        .build();
-//  }
-//
-//  public StudentGroupsResponse findStudentGroupsByTopic(String topic) {
-//    List<StudentEntity> allStudents = studentsRepository.findAll();
-//    HashSet<HomeworkEntity> groupHomework = getHomeworkWithSameTopic(topic, allStudents);
-//    StudentGroupsResponse response = StudentGroupsResponse.builder()
-//        .groups(new ArrayList<>())
-//        .build();
-//    groupHomework
-//        .forEach(i -> response.getGroups().add(i.getStudent().stream()
-//            .map(studentMapper::toStudentResponseInStudentGroupsResponse)
-//            .collect(Collectors.toList())));
-//    return response;
-//  }
-//
-//  private HashSet<HomeworkEntity> getHomeworkWithSameTopic(String topic, List<StudentEntity> allStudents) {
-//    HashSet<HomeworkEntity> groupHomework = new HashSet<>();
-//    allStudents.stream()
-//        .filter(student -> student.getHomework()
-//            .stream()
-//            .anyMatch(i -> i.getTopic().equals(topic)))
-//        .forEach(i -> groupHomework.add(i.getHomework().stream()
-//            .filter(o -> o.getTopic()
-//                .equals(topic))
-//            .findFirst()
-//            .orElse(null)));
-//    return groupHomework;
-//  }
+  public StudentsResponse updateHomework(Integer studentId, UpdateHomeworkRequest updateHomeworkRequest) {
+    StudentEntity student = studentsRepository.findById(studentId)
+        .orElseThrow(() -> new StudentNotFoundException(studentId));
+    Integer homeworkId = updateHomeworkRequest.getId();
+    StudentHomeworkEntity studentHomework = student.getStudentHomework().stream()
+        .filter(homework -> homework.getHomework().getId().equals(homeworkId))
+        .findFirst()
+        .orElseThrow(() -> new HomeworkNotFoundException(homeworkId));
+    String content = updateHomeworkRequest.getContent();
+    if(content != null && !content.isEmpty()){
+      studentHomework.setContent(content);
+    }
+    StudentEntity studentEntity = studentsRepository.save(student);
+
+    return StudentsResponse.builder()
+        .data(List.of(studentMapper.toStudentResponseInStudentsResponse(studentEntity)))
+        .build();
+  }
+
 }

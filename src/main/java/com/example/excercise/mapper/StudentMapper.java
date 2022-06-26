@@ -12,6 +12,4 @@ public interface StudentMapper {
    StudentsResponse.StudentResponse toStudentResponseInStudentsResponse(StudentEntity studentEntity);
 
   StudentIdResponse toStudentIdResponse(StudentEntity studentEntity);
-
-  StudentGroupsResponse.StudentResponse toStudentResponseInStudentGroupsResponse(StudentEntity studentEntity);
 }

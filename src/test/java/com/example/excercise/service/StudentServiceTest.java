@@ -5,12 +5,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import com.example.excercise.dto.request.CreateHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentHomeworkRequest;
 import com.example.excercise.dto.request.CreateStudentRequest;
 import com.example.excercise.dto.request.UpdateHomeworkRequest;
-import com.example.excercise.dto.responce.HomeworkResponse;
-import com.example.excercise.dto.responce.StudentGroupsResponse;
 import com.example.excercise.dto.responce.StudentIdResponse;
 import com.example.excercise.dto.responce.StudentsResponse;
 import com.example.excercise.entity.ClassroomEntity;
@@ -27,7 +24,6 @@ import com.example.excercise.repository.ClassroomsRepository;
 import com.example.excercise.repository.HomeworkRepository;
 import com.example.excercise.repository.StudentsRepository;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -242,87 +238,6 @@ class StudentServiceTest {
     assertThat(requiredStudents.get(0).getId(), is(9));
   }
 
-//  @Test
-//  void should_return_studentGroups_when_using_group_by_homework_endpoint_and_queried_a_topic() {
-//
-//    List<HomeworkEntity> homework = List.of(HomeworkEntity.builder()
-//        .topic("homework")
-//            .student(List.of(StudentEntity
-//                    .builder()
-//                    .id(1)
-//                    .name("nana")
-//                    .classroom(
-//                        ClassroomEntity.builder()
-//                            .grade(1)
-//                            .classNumber(1)
-//                            .build()
-//                    )
-//                    .build(),
-//                StudentEntity.builder()
-//                    .id(2)
-//                    .name("jack")
-//                    .classroom(
-//                        ClassroomEntity.builder()
-//                            .grade(2)
-//                            .classNumber(3)
-//                            .build()
-//                    )
-//                    .build()))
-//        .build());
-//    when(studentsRepository.findAll())
-//        .thenReturn(List.of(StudentEntity
-//            .builder()
-//                .id(1)
-//                .name("nana")
-//                .classroom(
-//                    ClassroomEntity.builder()
-//                        .grade(1)
-//                        .classNumber(1)
-//                        .build()
-//                )
-//                .homework(homework)
-//            .build(),
-//            StudentEntity.builder()
-//                .id(2)
-//                .name("jack")
-//                .classroom(
-//                    ClassroomEntity.builder()
-//                        .grade(2)
-//                        .classNumber(3)
-//                        .build()
-//                )
-//                .homework(homework)
-//            .build(),
-//            StudentEntity.builder()
-//                .id(3)
-//                .name("momo")
-//                .classroom(
-//                    ClassroomEntity.builder()
-//                        .grade(2)
-//                        .classNumber(3)
-//                        .build()
-//                )
-//                .homework(List.of(HomeworkEntity.builder()
-//                    .topic("ui")
-//                    .build()))
-//            .build()));
-//
-//    List<List<StudentGroupsResponse.StudentResponse>> groups = studentService.findStudentGroupsByTopic("homework").getGroups();
-//
-//    assertThat(groups.size(), is(1));
-//    List<StudentGroupsResponse.StudentResponse> students = groups.get(0);
-//    assertThat(students.size(), is(2));
-//    assertThat(students.get(0).getId(), is(1));
-//    assertThat(students.get(0).getName(), is("nana"));
-//    assertThat(students.get(0).getClassroom().getGrade(), is(1));
-//    assertThat(students.get(0).getClassroom().getClassNumber(), is(1));
-//
-//    assertThat(students.get(1).getId(), is(2));
-//    assertThat(students.get(1).getName(), is("jack"));
-//    assertThat(students.get(1).getClassroom().getGrade(), is(2));
-//    assertThat(students.get(1).getClassroom().getClassNumber(), is(3));
-//  }
-
   @Test
   void should_throw_not_found_exception_when_student_is_not_exist() {
     when(studentsRepository.findById(100)).thenReturn(Optional.empty());
@@ -386,76 +301,82 @@ class StudentServiceTest {
     assertThat(homework.get(0).getHomework().getId(), is(1));
   }
 
-//  @Test
-//  void should_throw_not_found_exception_when_student_updates_homework_and_student_is_not_exist() {
-//    when(studentsRepository.findById(100)).thenReturn(Optional.empty());
-//
-//    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().build());
-//    Exception exception = assertThrows(StudentNotFoundException.class, executable);
-//
-//    assertThat(exception.getMessage(), is("Student not found with id: "+100));
-//  }
-//  @Test
-//  void should_throw_not_found_exception_when_student_updates_homework_and_homework_is_not_exist() {
-//    when(studentsRepository.findById(100))
-//        .thenReturn(Optional.of(StudentEntity
-//        .builder()
-//        .homework(List.of())
-//        .build()));
-//
-//    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().id(1).build());
-//    Exception exception = assertThrows(HomeworkNotFoundException.class, executable);
-//
-//    assertThat(exception.getMessage(), is("Homework not found with id: "+1));
-//  }
-//
-//  @Test
-//  void should_return_student_when_student_homework_update_successfully() {
-//    ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
-//    StudentEntity studentById = StudentEntity
-//        .builder()
-//        .id(1)
-//        .homework(new ArrayList<>(List.of(HomeworkEntity.builder()
-//            .id(2)
-//            .topic("homework")
-//            .content("hello")
-//            .build())))
-//        .build();
-//    when(studentsRepository.findById(1))
-//        .thenReturn(Optional.of(studentById));
-//    when(studentsRepository.save(captor.capture()))
-//        .thenReturn(StudentEntity
-//            .builder()
-//            .id(1)
-//            .homework(List.of(HomeworkEntity
-//                .builder()
-//                .id(2)
-//                .topic("homework")
-//                .content("update")
-//                .student(new ArrayList<>(List.of(studentById)))
-//                .build()))
-//            .build());
-//
-//
-//    List<StudentsResponse.StudentResponse> actual = studentService.updateHomework(1, UpdateHomeworkRequest.builder()
-//            .id(2)
-//            .content("update")
-//            .build())
-//        .getData();
-//
-//    StudentEntity studentEntity = captor.getValue();
-//    List<HomeworkEntity> homework = studentEntity.getHomework();
-//    assertThat(homework.size(), is(1));
-//    assertThat(homework.get(0).getId(), is(2));
-//    assertThat(homework.get(0).getTopic(), is("homework"));
-//    assertThat(homework.get(0).getContent(),is("update"));
-//
-//    assertThat(actual.size(), is(1));
-//    assertThat(actual.get(0).getId(), is(1));
-//    List<HomeworkResponse> homeworkList = actual.get(0).getHomework();
-//    assertThat(homeworkList.size(), is(1));
-//    assertThat(homeworkList.get(0).getId(), is(2));
-//    assertThat(homeworkList.get(0).getTopic(), is("homework"));
-//    assertThat(homeworkList.get(0).getContent(), is("update"));
-//  }
+  @Test
+  void should_throw_not_found_exception_when_student_updates_homework_and_student_is_not_exist() {
+    when(studentsRepository.findById(100)).thenReturn(Optional.empty());
+
+    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().build());
+    Exception exception = assertThrows(StudentNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Student not found with id: "+100));
+  }
+  @Test
+  void should_throw_not_found_exception_when_student_updates_homework_and_homework_is_not_exist() {
+    when(studentsRepository.findById(100))
+        .thenReturn(Optional.of(StudentEntity
+        .builder()
+        .studentHomework(List.of())
+        .build()));
+
+    Executable executable = () -> studentService.updateHomework(100, UpdateHomeworkRequest.builder().id(1).build());
+    Exception exception = assertThrows(HomeworkNotFoundException.class, executable);
+
+    assertThat(exception.getMessage(), is("Homework not found with id: "+1));
+  }
+
+  @Test
+  void should_return_student_when_student_homework_update_successfully() {
+    ArgumentCaptor<StudentEntity> captor = ArgumentCaptor.forClass(StudentEntity.class);
+    StudentEntity studentById = StudentEntity
+        .builder()
+        .id(1)
+        .name("nana")
+        .classroom(ClassroomEntity.builder().id(1).grade(1).classNumber(3).build())
+        .studentHomework(new ArrayList<>(List.of(StudentHomeworkEntity.builder()
+            .id(1)
+            .content("hello")
+            .homework(HomeworkEntity.builder().id(2).build())
+            .build())))
+        .build();
+    when(studentsRepository.findById(1))
+        .thenReturn(Optional.of(studentById));
+    when(studentsRepository.save(captor.capture()))
+        .thenReturn(StudentEntity
+            .builder()
+            .id(1)
+            .name("nana")
+            .classroom(ClassroomEntity.builder().id(1).grade(1).classNumber(3).build())
+            .studentHomework(List.of(StudentHomeworkEntity
+                .builder()
+                .id(2)
+                .content("update")
+                .student(studentById)
+                .build()))
+            .build());
+
+    List<StudentsResponse.StudentResponse> result = studentService.updateHomework(1, UpdateHomeworkRequest.builder()
+        .id(2)
+        .content("update")
+        .build()).getData();
+
+    StudentEntity studentEntity = captor.getValue();
+    assertThat(studentEntity.getId(), is(1));
+    assertThat(studentEntity.getName(), is("nana"));
+    assertThat(studentEntity.getClassroom().getId(), is(1));
+    assertThat(studentEntity.getClassroom().getGrade(), is(1));
+    assertThat(studentEntity.getClassroom().getClassNumber(), is(3));
+
+    List<StudentHomeworkEntity> homework = studentEntity.getStudentHomework();
+    assertThat(homework.size(), is(1));
+    assertThat(homework.get(0).getId(), is(1));
+    assertThat(homework.get(0).getContent(),is("update"));
+    assertThat(homework.get(0).getHomework().getId(), is(2));
+
+    assertThat(result.size(), is(1));
+    assertThat(result.get(0).getId(), is(1));
+    assertThat(result.get(0).getName(), is("nana"));
+    assertThat(result.get(0).getClassroom().getGrade(), is(1));
+    assertThat(result.get(0).getClassroom().getClassNumber(), is(3));
+
+  }
 }

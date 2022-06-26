@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassroomResponse {
+  private Integer id;
   private Integer grade;
   private Integer classNumber;
 }

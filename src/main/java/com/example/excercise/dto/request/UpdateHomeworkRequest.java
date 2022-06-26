@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateHomeworkRequest {
   private Integer id;
-  private String topic;
   private String content;
 }

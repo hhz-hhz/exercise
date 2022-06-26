@@ -55,19 +55,10 @@ public class StudentsController {
     return "{\nid :" + studentService.submitHomework(homeworkId, createStudentHomeworkRequest)+"\n}";
   }
 
-//  @PutMapping("/{studentId}/homework")
-//  @ResponseStatus(HttpStatus.OK)
-//  public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
-//    return studentService.updateHomework(studentId, updateHomeworkRequest);
-//  }
-//
-//  @GetMapping("/group-by-homework")
-//  @ResponseStatus(HttpStatus.OK)
-//  public StudentGroupsResponse getRequiredStudentGroups(@RequestParam(required = false)Map<String, String> query){
-//    if(query.containsKey("topic")){
-//      return studentService.findStudentGroupsByTopic(query.get("topic"));
-//    }else{
-//      return StudentGroupsResponse.builder().build();
-//    }
-//  }
+  @PutMapping("/{studentId}/homework")
+  @ResponseStatus(HttpStatus.OK)
+  public StudentsResponse updateStudentHomework(@PathVariable Integer studentId, @RequestBody UpdateHomeworkRequest updateHomeworkRequest){
+    return studentService.updateHomework(studentId, updateHomeworkRequest);
+  }
+
 }
