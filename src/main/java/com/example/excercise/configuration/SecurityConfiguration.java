@@ -18,7 +18,7 @@ public class SecurityConfiguration extends AadResourceServerWebSecurityConfigure
         .csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers("/students/group-by-homework")
+        .antMatchers("/teachers/*")
         .authenticated();
   }
 }
