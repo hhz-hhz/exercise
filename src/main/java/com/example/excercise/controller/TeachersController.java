@@ -46,7 +46,7 @@ public class TeachersController {
       created_at = Date.valueOf(query.get("created_at"));
     }
     if(grade != null && clazz != null && created_at != null){
-      return teacherService.getStudentHomework(id, grade, clazz, created_at);
+      return teacherService.getStudentsHomework(id, grade, clazz, created_at);
     }
     return StudentsHomeworkResponse.builder().build();
   }

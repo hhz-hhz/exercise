@@ -40,7 +40,7 @@ public class TeacherService {
     return homework.get(homework.size()-1).getId();
   }
 
-  public StudentsHomeworkResponse getStudentHomework(Integer id, Integer grade, Integer clazz, Date create_at) {
+  public StudentsHomeworkResponse getStudentsHomework(Integer id, Integer grade, Integer clazz, Date create_at) {
     TeacherEntity teacher = teachersRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException(id));
     ClassroomEntity classroom = teacher.getClassrooms().stream()
         .filter(i -> i.getGrade().equals(grade) && i.getClassNumber().equals(clazz))

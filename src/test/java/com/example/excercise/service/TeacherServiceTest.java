@@ -110,7 +110,7 @@ class TeacherServiceTest {
     when(teachersRepository.findById(1))
         .thenReturn(Optional.empty());
 
-    Executable executable = () -> teacherService.getStudentHomework(1, 0, 0, Date.valueOf("2022-06-20"));
+    Executable executable = () -> teacherService.getStudentsHomework(1, 0, 0, Date.valueOf("2022-06-20"));
     Exception exception = assertThrows(TeacherNotFoundException.class, executable);
 
     assertThat(exception.getMessage(), is("Teacher not found with id: 1"));
@@ -125,7 +125,7 @@ class TeacherServiceTest {
             .build()
         ));
 
-    Executable executable = () -> teacherService.getStudentHomework(1, 1, 8, Date.valueOf("2022-06-20"));
+    Executable executable = () -> teacherService.getStudentsHomework(1, 1, 8, Date.valueOf("2022-06-20"));
 
     Exception exception = assertThrows(ClassroomNotFoundException.class, executable);
 
@@ -152,7 +152,7 @@ class TeacherServiceTest {
             .build()
         ));
 
-    StudentsHomeworkResponse result = teacherService.getStudentHomework(1, 1, 8, Date.valueOf("2022-06-20"));
+    StudentsHomeworkResponse result = teacherService.getStudentsHomework(1, 1, 8, Date.valueOf("2022-06-20"));
 
     assertThat(result.getHomework().size(), is(1));
     assertThat(result.getHomework().get(0).getId(), is(3));
